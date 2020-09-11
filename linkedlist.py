@@ -58,7 +58,6 @@ class LinkedList:
         :param value: inserting node
         :return: None
         """
-        self.verification()
         append_node = Node(value)
 
         if not self.__len:
@@ -99,9 +98,10 @@ class LinkedList:
 
 
 if __name__ == '__main__':
-    l = LinkedList()
-    l.append(1)
-    l.append(2)
+    l1 = LinkedList()
+    l1.append(1)
+    l1.append(2)
+    print(dir(l1))
 
-    for value in l:
+    for value in l1:
         print(value)
