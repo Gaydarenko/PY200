@@ -87,7 +87,15 @@ class Date:
 
     @property
     def year(self):
-        pass
+        return self._year
+
+    @year.setter
+    def year(self, value):
+        if not isinstance(value, int):
+            raise ValueError('Value year must be int')
+        if value < 1:
+            raise ValueError('Value year must be only positive')
+        self._year = value
 
     def add_day(self, day):
         pass
