@@ -1,4 +1,3 @@
-
 # coding: utf-8
 
 # Разработка класса данных
@@ -41,8 +40,17 @@ class Date:
         return True if year % 4 == 0 and year % 100 != 0 else False
 
     @classmethod
-    def get_max_day(cls, year, month):
-        pass
+    def get_max_day(cls, year: int, month: int) -> int:
+        """
+        Determines the number of days in the month of interest, taking into account the (no)leap year
+        :param year: year of interesting
+        :param month: month of interesting
+        :return: return max day in month of inter
+        """
+        if month == 2:
+            return cls.DAY_OF_MONTH[cls.is_leap_year(year)][1]
+        else:
+            return cls.DAY_OF_MONTH[0][month - 1]
 
     @property
     def date(self):
@@ -80,4 +88,3 @@ class Date:
     @staticmethod
     def date2_date1(date2, date1):
         pass
-
