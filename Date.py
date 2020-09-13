@@ -27,7 +27,7 @@ class Date:
         self.day = args[2]
 
     def __str__(self):
-        pass
+        return f'{self.day}.{self.month}.{self.year}'
 
     def __repr__(self):
         pass
@@ -60,20 +60,20 @@ class Date:
 
     @classmethod
     def __is_valid_date(cls, *args):
-        if not isinstance(args[0], int):
-            raise ValueError('Value year must be int')
-        if args[0] < 1:
-            raise ValueError('Value year must be only positive')
+        # if not isinstance(args[0], int):
+        #     raise ValueError('Value year must be int')
+        # if args[0] < 1:
+        #     raise ValueError('Value year must be only positive')
 
-        if not isinstance(args[1], int):
-            raise ValueError('Value month must be int')
-        if args[1] not in range(1, 13):
-            raise ValueError('Value month must be in range from 1 to 12')
+        # if not isinstance(args[1], int):
+        #     raise ValueError('Value month must be int')
+        # if args[1] not in range(1, 13):
+        #     raise ValueError('Value month must be in range from 1 to 12')
 
         days_in_months = cls.DAY_OF_MONTH[cls.is_leap_year(args[0])]
         if not isinstance(args[2], int):
             raise ValueError('Value day must be int')
-        if args[2] not in range(1, days_in_months[args[1] + 1]):
+        if args[2] not in range(1, days_in_months[args[1] - 1] + 1):
             raise ValueError(f'Value day must be in range from 1 to {days_in_months[args[1]]}')
 
     @date.setter
@@ -95,7 +95,11 @@ class Date:
 
     @month.setter
     def month(self, value):
-        self.__is_valid_date(self.year, value, self.day)
+        # self.__is_valid_date(self.year, value, self.day)
+        if not isinstance(value, int):
+            raise ValueError('Value month must be int')
+        if value not in range(1, 13):
+            raise ValueError('Value month must be in range from 1 to 12')
         self._month = value
 
     @property
@@ -104,7 +108,11 @@ class Date:
 
     @year.setter
     def year(self, value):
-        self.__is_valid_date(value, self.month, self.day)
+        # self.__is_valid_date(value, self.month, self.day)
+        if not isinstance(value, int):
+            raise ValueError('Value year must be int')
+        if value < 1:
+            raise ValueError('Value year must be only positive')
         self._year = value
 
     def add_day(self, day):
@@ -119,3 +127,14 @@ class Date:
     @staticmethod
     def date2_date1(date2, date1):
         pass
+
+
+if __name__ == "__main__":
+    d1 = Date(2019, 9, 11)
+    print(d1)
+    d2 = Date(2020, 2, 29)
+    print(d2)
+    d3 = Date(2019, 2, 29)
+    print(d3)
+    # d4.date = '2020-9-11'
+    # print(d4)
