@@ -66,11 +66,24 @@ class Date:
 
     @property
     def day(self):
+        # return self._day
         pass
+
+    # @day.setter
+    # def day(self, value_date):
+    #     pass
 
     @property
     def month(self):
-        pass
+        return self._month
+
+    @month.setter
+    def month(self, value):
+        if not isinstance(value, int):
+            raise ValueError('Value month must be int')
+        if value not in range(1, 13):
+            raise ValueError('Value month must be in range from 1 to 12')
+        self._month = value
 
     @property
     def year(self):
