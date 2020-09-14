@@ -22,15 +22,16 @@ class Date:
                     (31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31))  #
 
     def __init__(self, *args):
-        self.year = args[0]
-        self.month = args[1]
-        self.day = args[2]
+        self.year, self.month, self.day = args
+        # self.year = args[0]
+        # self.month = args[1]
+        # self.day = args[2]
 
     def __str__(self):
         return f'{self.day}.{self.month}.{self.year}'
 
     def __repr__(self):
-        pass
+        return f'Date({self.year}, {self.month}, {self.day})'
 
     @staticmethod
     def is_leap_year(year: int) -> bool:
@@ -56,7 +57,7 @@ class Date:
 
     @property
     def date(self):
-        pass
+        return self._date
 
     @classmethod
     def __is_valid_date(cls, *args):
@@ -74,11 +75,16 @@ class Date:
         if not isinstance(args[2], int):
             raise ValueError('Value day must be int')
         if args[2] not in range(1, days_in_months[args[1] - 1] + 1):
-            raise ValueError(f'Value day must be in range from 1 to {days_in_months[args[1]]}')
+            raise ValueError(f'Value day must be in range from 1 to {days_in_months[args[1] - 1]}')
 
     @date.setter
-    def date(self, value):
-        pass
+    def date(self, value: str):
+        args = value.split('.')
+        if len(args) == 3:
+            self.year, self.month, self.day = list(map(int, args))
+        else:
+            raise ValueError('Value date must be string in next format: "year.month.day"')
+        self._date = '.'.join(list(map(str, (self.day, self.month, self.year))))
 
     @property
     def day(self):
@@ -132,9 +138,10 @@ class Date:
 if __name__ == "__main__":
     d1 = Date(2019, 9, 11)
     print(d1)
+    print(repr(d1))
     d2 = Date(2020, 2, 29)
     print(d2)
-    d3 = Date(2019, 2, 29)
-    print(d3)
-    # d4.date = '2020-9-11'
-    # print(d4)
+    # d3 = Date(2019, 2, 29)
+    # print(d3)
+    d2.date = '2020.9.11'
+    print(d2.date)
