@@ -134,8 +134,17 @@ class Date:
             raise ValueError('Value year must be only positive')
         self._year = value
 
-    def add_day(self, day):
-        pass
+    def add_day(self, days):
+        try:
+            self.day += days
+        except ValueError:
+            days -= self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month] - self.day
+            self.day = 1
+            self.add_month(1)
+            while days > self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month]:
+                days -= self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month]
+                self.add_month(1)
+            self.day += days
 
     def add_month(self, month: int) -> None:
         """
