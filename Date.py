@@ -27,10 +27,18 @@ class Date:
         # self.month = args[1]
         # self.day = args[2]
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """
+        Redetermine func __str__ for user
+        :return: string format '23.11.2018'
+        """
         return f'{self.day}.{self.month}.{self.year}'
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """
+        Redetermine func __repr__ for programmers
+        :return: string format 'Date(2018, 11, 23)'
+        """
         return f'Date({self.year}, {self.month}, {self.day})'
 
     @staticmethod
@@ -60,7 +68,12 @@ class Date:
         return self._date
 
     @classmethod
-    def __is_valid_date(cls, *args):
+    def __is_valid_date(cls, *args: int) -> None:
+        """
+        Verification day
+        :param args: [year, month, day]
+        :return: None
+        """
         # if not isinstance(args[0], int):
         #     raise ValueError('Value year must be int')
         # if args[0] < 1:
@@ -78,7 +91,7 @@ class Date:
             raise ValueError(f'Value day must be in range from 1 to {days_in_months[args[1] - 1]}')
 
     @date.setter
-    def date(self, value: str):
+    def date(self, value):
         args = value.split('.')
         if len(args) == 3:
             self.year, self.month, self.day = list(map(int, args))
@@ -124,11 +137,32 @@ class Date:
     def add_day(self, day):
         pass
 
-    def add_month(self, month):
-        pass
+    def add_month(self, month: int) -> None:
+        """
+        Function add some years to self.year
+        :param month: adding year
+        :return: None
+        """
+        remain = 12 - self.month
+        if month <= remain:
+            self.month += month
+        else:
+            remain = month - remain
+            self.year += 1 + remain // 12
+            self.month = remain % 12
+            try:
+                self.__is_valid_date(self.year, self.month, self.day)
+            except ValueError:
+                self.day = self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month]  # присвоение последнего дня
+                                                                                        # этого месяца
 
-    def add_year(self, year):
-        pass
+    def add_year(self, year: int) -> None:
+        """
+        Function add some years to self.year
+        :param year: adding year
+        :return: None
+        """
+        self.year += year
 
     @staticmethod
     def date2_date1(date2, date1):
@@ -143,5 +177,16 @@ if __name__ == "__main__":
     print(d2)
     # d3 = Date(2019, 2, 29)
     # print(d3)
-    d2.date = '2020.9.11'
-    print(d2.date)
+    d2.add_year(2)
+    print(f'+2 year = {d2}')
+
+    # d2.add_month(2)
+    # print(f'+2 month = {d2}')
+    # d2.add_month(10)
+    # print(f'+10 month = {d2}')
+    d2.add_month(11)
+    print(f'+11 month = {d2}')
+    # d2.add_month(12)
+    # print(f'+12 month = {d2}')
+    # d2.date = '2020.9.11'
+    # print(d2.date)
