@@ -199,3 +199,5 @@ if __name__ == "__main__":
     # print(f'+12 month = {d2}')
     # d2.date = '2020.9.11'
     # print(d2.date)
+
+    print(d2.is_leap_year(2020))
