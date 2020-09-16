@@ -175,7 +175,14 @@ class Date:
 
     @staticmethod
     def date2_date1(date2, date1):
-        pass
+        # date2 = date2.split('.')
+        # if len(date2) == 3:
+        #     self.year, self.month, self.day = list(map(int, date2))
+        # else:
+        #     raise ValueError('Value date must be string in next format: "year.month.day"')
+
+        pass    # не могу разобраться как вызвать тот же self.year, ...
+
 
 
 if __name__ == "__main__":
@@ -197,8 +204,8 @@ if __name__ == "__main__":
     print(f'+11 month = {d2}')
     # d2.add_month(12)
     # print(f'+12 month = {d2}')
-    # d2.date = '2020.9.11'
-    # print(d2.date)
+    d2.date = '2020.9.11'
+    print(f'd2.date={d2.date}')
 
     print(d2.is_leap_year(2020))
 
@@ -210,4 +217,5 @@ if __name__ == "__main__":
     d3 = Date(2019, 10, 10)
     d3.add_day(30)
     print(d3)
-    
+
+    d3.date2_date1('2222.9.11', '2111.9.11')
