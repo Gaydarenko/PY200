@@ -138,11 +138,11 @@ class Date:
         try:
             self.day += days
         except ValueError:
-            days -= self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month] - self.day
+            days -= self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month - 1] - self.day + 1
             self.day = 1
             self.add_month(1)
-            while days > self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month]:
-                days -= self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month]
+            while days >= self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month - 1]:
+                days -= self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month - 1]
                 self.add_month(1)
             self.day += days
 
@@ -162,8 +162,8 @@ class Date:
             try:
                 self.__is_valid_date(self.year, self.month, self.day)
             except ValueError:
-                self.day = self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month]  # присвоение последнего дня
-                                                                                        # этого месяца
+                self.day = self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month - 1]  # присвоение последнего дня
+                                                                                            # этого месяца
 
     def add_year(self, year: int) -> None:
         """
@@ -201,3 +201,13 @@ if __name__ == "__main__":
     # print(d2.date)
 
     print(d2.is_leap_year(2020))
+
+    d2.add_month(10)
+    print(d2)
+    d2.add_day(33)
+    print(d2)
+
+    d3 = Date(2019, 10, 10)
+    d3.add_day(30)
+    print(d3)
+    
