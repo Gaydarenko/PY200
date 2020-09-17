@@ -179,6 +179,10 @@ class Date:
         :return: None
         """
         self.year += year
+        try:
+            self.__is_valid_date(self.year, self.month, self.day)
+        except ValueError:
+            self.day = self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month - 1]
 
     @staticmethod
     def date2_date1(date2, date1):
@@ -189,7 +193,6 @@ class Date:
         #     raise ValueError('Value date must be string in next format: "year.month.day"')
 
         pass    # не могу разобраться как вызвать тот же self.year, ...
-
 
 
 if __name__ == "__main__":
