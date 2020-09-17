@@ -11,8 +11,7 @@ class LinkedList:
         """
         Variables initialization
         """
-        self.__head = None
-        self.__tail = None
+        self.__head = self.__tail = None
         self.__len = 0
 
     def __len__(self):
@@ -22,8 +21,11 @@ class LinkedList:
         """
         return self.__len
 
+    def __repr__(self):
+        return '<->'.join(str(node) for node in self)
+
     # @staticmethod
-    def verification(self, index: int) -> None:
+    def verification_index(self, index: int) -> None:
         """
         Verification of requirements for index
         :param index: Node position in LinkedList
@@ -41,10 +43,10 @@ class LinkedList:
         :param value: inserting node
         :return: None
         """
-        self.verification(index)
+        self.verification_index(index)
         insert_node = Node(value)
 
-        if self.__len == 0:         # пустой список
+        if not self.__len:         # пустой список
             self.__head = insert_node
             self.__tail = self.__head
             self.__len += 1
@@ -101,7 +103,11 @@ if __name__ == '__main__':
     l1 = LinkedList()
     l1.append(1)
     l1.append(2)
+    l1.append(3)
+    l1.append(4)
+    l1.append(5)
     print(dir(l1))
+    print(l1)
 
     for value in l1:
         print(value)

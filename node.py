@@ -36,7 +36,7 @@ class Node:
 
         self.__prev = prev_
 
-    # def __str__(self):
+    def __str__(self):
         return f"{repr(self.__prev)} >> Value: {self.value} >> {repr(self.__next)}"
 
     def __repr__(self):
