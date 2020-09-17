@@ -22,24 +22,22 @@ class Date:
                     (31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31))  #
 
     def __init__(self, *args):
-        self.year, self.month, self.day = args
-        # self.year = args[0]
-        # self.month = args[1]
-        # self.day = args[2]
+        self.__is_valid_date(*args)
+        self._year, self._month, self._day = args
 
     def __str__(self) -> str:
         """
         Redetermine func __str__ for user
         :return: string format '23.11.2018'
         """
-        return f'{self.day}.{self.month}.{self.year}'
+        return f'{self._day}.{self._month}.{self._year}'
 
     def __repr__(self) -> str:
         """
         Redetermine func __repr__ for programmers
         :return: string format 'Date(2018, 11, 23)'
         """
-        return f'Date({self.year}, {self.month}, {self.day})'
+        return f'Date({self._year}, {self._month}, {self._day})'
 
     @staticmethod
     def is_leap_year(year: int) -> bool:
@@ -66,7 +64,7 @@ class Date:
     @property
     def date(self):
         # return self._date
-        return f'{self.day}, {self.month}, {self.year}'
+        return f'{self._day}, {self._month}, {self._year}'
 
     @classmethod
     def __is_valid_date(cls, *args: int) -> None:
@@ -96,7 +94,7 @@ class Date:
         try:
             args = value.split('.')
             if len(args) == 3:
-                self.year, self.month, self.day = list(map(int, args))
+                self._year, self._month, self._day = list(map(int, args))
             else:
                 raise ValueError
         except TypeError:
@@ -104,15 +102,13 @@ class Date:
         except ValueError:
             print('Value date must be string in next format: "year.month.day"')
 
-        # self._date = '.'.join(list(map(str, (self.day, self.month, self.year))))
-
     @property
     def day(self):
         return self._day
 
     @day.setter
     def day(self, value):
-        self.__is_valid_date(self.year, self.month, value)
+        self.__is_valid_date(self._year, self._month, value)
         self._day = value
 
     @property
@@ -121,11 +117,7 @@ class Date:
 
     @month.setter
     def month(self, value):
-        self.__is_valid_date(1, value, 1)
-        # if not isinstance(value, int):
-        #     raise ValueError('Value month must be int')
-        # if value not in range(1, 13):
-        #     raise ValueError('Value month must be in range from 1 to 12')
+        self.__is_valid_date(self._year, value, self._day)
         self._month = value
 
     @property
@@ -134,24 +126,20 @@ class Date:
 
     @year.setter
     def year(self, value):
-        self.__is_valid_date(value, 1, 1)
-        # if not isinstance(value, int):
-        #     raise ValueError('Value year must be int')
-        # if value < 1:
-        #     raise ValueError('Value year must be only positive')
+        self.__is_valid_date(value, self._month, self._day)
         self._year = value
 
     def add_day(self, days):
         try:
-            self.day += days
+            self._day += days
         except ValueError:
-            days -= self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month - 1] - self.day + 1
-            self.day = 1
+            days -= self.DAY_OF_MONTH[self.is_leap_year(self._year)][self._month - 1] - self._day + 1
+            self._day = 1
             self.add_month(1)
-            while days >= self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month - 1]:
-                days -= self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month - 1]
+            while days >= self.DAY_OF_MONTH[self.is_leap_year(self._year)][self._month - 1]:
+                days -= self.DAY_OF_MONTH[self.is_leap_year(self._year)][self._month - 1]
                 self.add_month(1)
-            self.day += days
+            self._day += days
 
     def add_month(self, month: int) -> None:
         """
@@ -159,18 +147,18 @@ class Date:
         :param month: adding year
         :return: None
         """
-        remain = 12 - self.month
+        remain = 12 - self._month
         if month <= remain:
-            self.month += month
+            self._month += month
         else:
             remain = month - remain
             self.year += 1 + remain // 12
             self.month = remain % 12
             try:
-                self.__is_valid_date(self.year, self.month, self.day)
+                self.__is_valid_date(self._year, self._month, self._day)
             except ValueError:
-                self.day = self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month - 1]  # присвоение последнего дня
-                                                                                            # этого месяца
+                self._day = self.DAY_OF_MONTH[self.is_leap_year(self._year)][self._month - 1]   # присвоение последнего
+                                                                                                # дня этого месяца
 
     def add_year(self, year: int) -> None:
         """
@@ -178,11 +166,11 @@ class Date:
         :param year: adding year
         :return: None
         """
-        self.year += year
+        self._year += year
         try:
-            self.__is_valid_date(self.year, self.month, self.day)
+            self.__is_valid_date(self._year, self._month, self._day)
         except ValueError:
-            self.day = self.DAY_OF_MONTH[self.is_leap_year(self.year)][self.month - 1]
+            self._day = self.DAY_OF_MONTH[self.is_leap_year(self._year)][self._month - 1]
 
     @staticmethod
     def date2_date1(date2, date1):
