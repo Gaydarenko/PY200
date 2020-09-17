@@ -92,11 +92,17 @@ class Date:
 
     @date.setter
     def date(self, value):
-        args = value.split('.')
-        if len(args) == 3:
-            self.year, self.month, self.day = list(map(int, args))
-        else:
-            raise ValueError('Value date must be string in next format: "year.month.day"')
+        try:
+            args = value.split('.')
+            if len(args) == 3:
+                self.year, self.month, self.day = list(map(int, args))
+            else:
+                raise ValueError
+        except TypeError:
+            print('Value date must be string')
+        except ValueError:
+            print('Value date must be string in next format: "year.month.day"')
+
         self._date = '.'.join(list(map(str, (self.day, self.month, self.year))))
 
     @property
