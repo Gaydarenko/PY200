@@ -65,7 +65,8 @@ class Date:
 
     @property
     def date(self):
-        return self._date
+        # return self._date
+        return f'{self.day}, {self.month}, {self.year}'
 
     @classmethod
     def __is_valid_date(cls, *args: int) -> None:
@@ -74,15 +75,15 @@ class Date:
         :param args: [year, month, day]
         :return: None
         """
-        # if not isinstance(args[0], int):
-        #     raise ValueError('Value year must be int')
-        # if args[0] < 1:
-        #     raise ValueError('Value year must be only positive')
+        if not isinstance(args[0], int):
+            raise ValueError('Value year must be int')
+        if args[0] < 1:
+            raise ValueError('Value year must be only positive')
 
-        # if not isinstance(args[1], int):
-        #     raise ValueError('Value month must be int')
-        # if args[1] not in range(1, 13):
-        #     raise ValueError('Value month must be in range from 1 to 12')
+        if not isinstance(args[1], int):
+            raise ValueError('Value month must be int')
+        if args[1] not in range(1, 13):
+            raise ValueError('Value month must be in range from 1 to 12')
 
         days_in_months = cls.DAY_OF_MONTH[cls.is_leap_year(args[0])]
         if not isinstance(args[2], int):
@@ -103,7 +104,7 @@ class Date:
         except ValueError:
             print('Value date must be string in next format: "year.month.day"')
 
-        self._date = '.'.join(list(map(str, (self.day, self.month, self.year))))
+        # self._date = '.'.join(list(map(str, (self.day, self.month, self.year))))
 
     @property
     def day(self):
@@ -120,11 +121,11 @@ class Date:
 
     @month.setter
     def month(self, value):
-        # self.__is_valid_date(self.year, value, self.day)
-        if not isinstance(value, int):
-            raise ValueError('Value month must be int')
-        if value not in range(1, 13):
-            raise ValueError('Value month must be in range from 1 to 12')
+        self.__is_valid_date(1, value, 1)
+        # if not isinstance(value, int):
+        #     raise ValueError('Value month must be int')
+        # if value not in range(1, 13):
+        #     raise ValueError('Value month must be in range from 1 to 12')
         self._month = value
 
     @property
@@ -133,11 +134,11 @@ class Date:
 
     @year.setter
     def year(self, value):
-        # self.__is_valid_date(value, self.month, self.day)
-        if not isinstance(value, int):
-            raise ValueError('Value year must be int')
-        if value < 1:
-            raise ValueError('Value year must be only positive')
+        self.__is_valid_date(value, 1, 1)
+        # if not isinstance(value, int):
+        #     raise ValueError('Value year must be int')
+        # if value < 1:
+        #     raise ValueError('Value year must be only positive')
         self._year = value
 
     def add_day(self, days):
