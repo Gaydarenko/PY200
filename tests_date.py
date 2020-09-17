@@ -9,8 +9,9 @@ class TestDate(unittest.TestCase):
     def test_is_leap_year(self):
         self.dt = Date(2019, 9, 1)
         self.assertTrue(self.dt.is_leap_year(2020))
+        self.assertTrue(self.dt.is_leap_year(2000))
         self.assertFalse(self.dt.is_leap_year(2019))
-        self.assertFalse(self.dt.is_leap_year(2000))
+        self.assertFalse(self.dt.is_leap_year(2100))
 
     def test_get_max_day(self):
         self.assertEqual(self.dt.get_max_day(2020, 2), 29)

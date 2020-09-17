@@ -48,7 +48,7 @@ class Date:
         :param year:year of interesting for check leap
         :return: True or False
         """
-        return True if year % 4 == 0 and year % 100 != 0 else False
+        return True if year % 4 == 0 and year % 100 != 0 or year % 400 == 0 else False
 
     @classmethod
     def get_max_day(cls, year: int, month: int) -> int:
