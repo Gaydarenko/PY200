@@ -56,11 +56,19 @@ class LinkedList:
         else:
             current_node = self.__head
             for i in range(self.__len):
-                if i == index - 1:
-                    current_node
+                if i == index - 1:  # определение ноды, после которой необходимо произвести вставку
+                    insert_node.next = current_node.next    # перенапрвление прямой ссылки
+                    current_node.next = insert_node
 
+                    current_node = insert_node.next     # перенос фокуса внимания на ноду после вставки
 
-        # TODO insert in center     # индекс в середине списка
+                    insert_node.prev = current_node.prev    # перенаправление обратной ссылки
+                    current_node.prev = insert_node
+
+                    self.__len += 1
+                    break
+
+                current_node = current_node.next
 
     def append(self, value: Any) -> None:
         """
@@ -126,6 +134,7 @@ if __name__ == '__main__':
     l1.append(4)
     l1.insert(9, 5)
     l1.insert(0, 0)
+    l1.insert(1, 99)
     print(dir(l1))
     print(l1)
     a = iter(l1)
