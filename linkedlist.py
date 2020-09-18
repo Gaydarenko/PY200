@@ -46,10 +46,20 @@ class LinkedList:
         self.verification_index(index)
         insert_node = Node(value)
 
-        if not self.__len or index > self.__len:         # пустой список или индекс за пределами списка
+        if not self.__len or index >= self.__len:         # пустой список или индекс за пределами списка
             self.append(value)
+        elif index == 0:
+            insert_node.next = self.__head
+            self.__head.prev = insert_node
+            self.__head = insert_node
+            self.__len += 1
         # else:
-        #
+        #     current_node = self.__head
+        #     for i in range(self.__len):
+        #         if i == index - 1:
+
+
+
         # TODO insert in center     # индекс в середине списка
 
     def append(self, value: Any) -> None:
@@ -79,6 +89,16 @@ class LinkedList:
             yield current_node.value
             current_node = current_node.next
 
+    # def __reversed__(self):
+    #     """
+    #     Redetermine reversed iterator
+    #     :return: previous node
+    #     """
+    #     current_node = self.__tail
+    #     for _ in range(self.__len):
+    #         yield current_node.value
+    #         current_node = current_node.prev
+
     def clear(self) -> None:
         """
         Clear LinkedList
@@ -105,8 +125,19 @@ if __name__ == '__main__':
     l1.insert(12, 3)
     l1.append(4)
     l1.insert(9, 5)
+    l1.insert(0, 0)
     print(dir(l1))
     print(l1)
+    a = iter(l1)
+    print(next(a))
+    print(next(a))
+    print(next(a))
+    print(next(a))
+    print('')
 
-    for value in l1:
-        print(value)
+    # print(reversed(next(l1)))
+
+    # for value in l1:
+    #     print(value)
+    # for _ in range(len(l1)):
+    #     print(next(l1))
