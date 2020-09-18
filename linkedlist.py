@@ -53,11 +53,11 @@ class LinkedList:
             self.__head.prev = insert_node
             self.__head = insert_node
             self.__len += 1
-        # else:
-        #     current_node = self.__head
-        #     for i in range(self.__len):
-        #         if i == index - 1:
-
+        else:
+            current_node = self.__head
+            for i in range(self.__len):
+                if i == index - 1:
+                    current_node
 
 
         # TODO insert in center     # индекс в середине списка
