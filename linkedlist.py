@@ -55,7 +55,7 @@ class LinkedList:
             self.__len += 1
         else:
             current_node = self.__head
-            for i in range(self.__len):
+            for i in range(self.__len):     # методы insert и find специально написал поразному - попробовать для себя
                 if i == index - 1:  # определение ноды, после которой необходимо произвести вставку
                     insert_node.next = current_node.next    # перенапрвление прямой ссылки
                     current_node.next = insert_node
@@ -123,7 +123,7 @@ class LinkedList:
         :return: node index or -1 if the value is not found
         """
         index = -1
-        for nnode in self:
+        for nnode in self:  # методы insert и find специально написал поразному - попробовать для себя
             index += 1
             if nnode == node:
                 return index
