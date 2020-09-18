@@ -22,7 +22,7 @@ class LinkedList:
         return self.__len
 
     def __repr__(self):
-        return '<->'.join(str(node) for node in self)
+        return '<->'.join(str(n) for n in self)
 
     # @staticmethod
     def verification_index(self, index: int) -> None:
@@ -46,12 +46,10 @@ class LinkedList:
         self.verification_index(index)
         insert_node = Node(value)
 
-        if not self.__len:         # пустой список
-            self.__head = insert_node
-            self.__tail = self.__head
-            self.__len += 1
-        elif index > self.__len:    # индекс за пределами списка
+        if not self.__len or index > self.__len:         # пустой список или индекс за пределами списка
             self.append(value)
+        # else:
+        #
         # TODO insert in center     # индекс в середине списка
 
     def append(self, value: Any) -> None:
@@ -63,12 +61,13 @@ class LinkedList:
         append_node = Node(value)
 
         if not self.__len:
-            self.insert(0, value)
+            self.__head = append_node
+            self.__tail = self.__head
         else:
             append_node.prev = self.__tail
             self.__tail.next = append_node
             self.__tail = append_node
-            self.__len += 1
+        self.__len += 1
 
     def __iter__(self):
         """
@@ -103,9 +102,9 @@ if __name__ == '__main__':
     l1 = LinkedList()
     l1.append(1)
     l1.append(2)
-    l1.append(3)
+    l1.insert(12, 3)
     l1.append(4)
-    l1.append(5)
+    l1.insert(9, 5)
     print(dir(l1))
     print(l1)
 
