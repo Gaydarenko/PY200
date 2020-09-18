@@ -117,7 +117,19 @@ class LinkedList:
         self.__len = 0
 
     def find(self, node):
-        ...
+        """
+        Finds the first occurrence of the specified node.
+        :param node: node value
+        :return: node index or -1 if the value is not found
+        """
+        index = -1
+        for nnode in self:
+            index += 1
+            if nnode == node:
+                return index
+        else:
+            return -1
+
 
     def remove(self, node):
         ...
@@ -138,15 +150,18 @@ if __name__ == '__main__':
     print(dir(l1))
     print(l1)
     a = iter(l1)
-    print(next(a))
-    print(next(a))
-    print(next(a))
-    print(next(a))
+
+    for _ in range(len(l1)):
+        print(next(a))
     print('')
+
+    print(l1.find(99))
+    print(l1.find(0))
+    print(l1.find(5))
+
+
 
     # print(reversed(next(l1)))
 
     # for value in l1:
     #     print(value)
-    # for _ in range(len(l1)):
-    #     print(next(l1))
