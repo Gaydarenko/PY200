@@ -55,7 +55,7 @@ class LinkedList:
             self.__len += 1
         else:
             current_node = self.__head
-            for i in range(self.__len):     # методы insert и find специально написал поразному - попробовать для себя
+            for i in range(self.__len):
                 if i == index - 1:  # определение ноды, после которой необходимо произвести вставку
                     insert_node.next = current_node.next    # перенапрвление прямой ссылки
                     current_node.next = insert_node
@@ -116,23 +116,52 @@ class LinkedList:
         self.__tail = None
         self.__len = 0
 
-    def find(self, node):
+    def find(self, node: Any) -> int:
         """
         Finds the first occurrence of the specified node.
         :param node: node value
         :return: node index or -1 if the value is not found
         """
         index = -1
-        for nnode in self:  # методы insert и find специально написал поразному - попробовать для себя
+        for current_node in self:
             index += 1
-            if nnode == node:
+            if current_node == node:
                 return index
         else:
             return -1
 
+    def remove(self, node: Any):
+        """
+        Remove the first occurrence of the specified node.
+        :param node: node value
+        :return: ValueError if the value is not found
+        """
+        prev_node = None
+        current_node = self.__head
+        print('!!!!!!!!!!!!!!')
 
-    def remove(self, node):
-        ...
+        if node == current_node:
+            current_node = current_node.next
+            self.__head = current_node
+            current_node.prev = None
+
+        elif node == self.__tail:
+            current_node = self.__tail
+            current_node = current_node.prev
+            self.__tail = current_node
+            current_node.next = None
+
+        else:
+            for _ in range(self.__len - 1):
+                if current_node.next == node and not prev_node:   # исключаю проверку снова - вдруг след. знач. такое же
+                    prev_node = current_node
+                elif prev_node and current_node.prev == node:
+                    prev_node.next = current_node
+                    current_node.prev = prev_node
+                    break
+            else:
+                raise ValueError
+
 
     def delete(self, index):
         ...
@@ -158,6 +187,13 @@ if __name__ == '__main__':
     print(l1.find(99))
     print(l1.find(0))
     print(l1.find(5))
+    print(l1.find(6))
+
+    n1 = Node(99)
+    print(n1.value)
+    l1.remove(n1)
+    print(l1)
+
 
 
 
