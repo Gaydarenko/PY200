@@ -178,7 +178,13 @@ class Date:
             self._day = self.DAY_OF_MONTH[self.is_leap_year(self._year)][self._month - 1]
 
     @staticmethod
-    def date2_date1(date2, date1):
+    def date2_date1(date2: str, date1: str) -> str:
+        """
+        The function counts amount of days between two dates.
+        :param date2: date value 2
+        :param date1: date value 1
+        :return: string with amount of days
+        """
         date2_ = date2.split('.')
         date1_ = date1.split('.')
         if len(date2_) == 3 and len(date1_) == 3:
