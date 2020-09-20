@@ -192,6 +192,9 @@ class Date:
         else:
             raise ValueError('Value date must be string in next format: "year.month.day"')
 
+        if year2 < year1 or year2 == year1 and month2 < month1 or year2 == year1 and month2 == month1 and day2 < day1:
+            raise ValueError('date2 value must be more then date1 value')
+
         if year1 == year2 and month1 == month2:
             day_res = day2 - day1
         elif year1 == year2:
@@ -210,8 +213,8 @@ if __name__ == "__main__":
     # Сюда смотреть не надо - это промежуточные тесты для быстрой отладки в процессе написания кода.
     # Все тесты  реализованы в tests_dete.py
 
-    # d1 = Date(2019, 9, 11)
-    # print(d1)
+    d1 = Date(2019, 9, 11)
+    print(d1)
     # print(repr(d1))
     # d2 = Date(2020, 2, 29)
     # print(d2)
@@ -245,14 +248,14 @@ if __name__ == "__main__":
     # d3.date2_date1('2222.9.11', '2111.9.11')
 
     # ((31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31), (31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31))
-    year1, month1, day1 = 2019, 8, 10
-    delta1 = sum(Date.DAY_OF_MONTH[Date.is_leap_year(year1)][month1-1:]) - day1
-    print(delta1)   # must be 143
-    year2, month2, day2 = 2020, 9, 20
-    delta2 = sum(Date.DAY_OF_MONTH[Date.is_leap_year(year2)][:month2-1]) + day2
-    print(delta2)   # must be 264
-    delta = sum(list(map(lambda x: sum(Date.DAY_OF_MONTH[Date.is_leap_year(x)]), range(year1+1, year2))))
-    print(delta)
-    print(delta2 + delta1 + delta)
+    # year1, month1, day1 = 2019, 8, 10
+    # delta1 = sum(Date.DAY_OF_MONTH[Date.is_leap_year(year1)][month1-1:]) - day1
+    # print(delta1)   # must be 143
+    # year2, month2, day2 = 2020, 9, 20
+    # delta2 = sum(Date.DAY_OF_MONTH[Date.is_leap_year(year2)][:month2-1]) + day2
+    # print(delta2)   # must be 264
+    # delta = sum(list(map(lambda x: sum(Date.DAY_OF_MONTH[Date.is_leap_year(x)]), range(year1+1, year2))))
+    # print(delta)
+    # print(delta2 + delta1 + delta)
 
 
