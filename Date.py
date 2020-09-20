@@ -179,12 +179,12 @@ class Date:
 
     @staticmethod
     def date2_date1(date2, date1):
-        date2 = date2.split('.')
-        date1 = date1.split('.')
-        if len(date2) == 3 and len(date1) == 3:
+        date2_ = date2.split('.')
+        date1_ = date1.split('.')
+        if len(date2_) == 3 and len(date1_) == 3:
             try:
-                year2, month2, day2 = list(map(int, date2))
-                year1, month1, day1 = list(map(int, date1))
+                year2, month2, day2 = list(map(int, date2_))
+                year1, month1, day1 = list(map(int, date1_))
                 Date.__is_valid_date(year2, month2, day2)
                 Date.__is_valid_date(year1, month1, day1)
             except TypeError:
@@ -192,42 +192,67 @@ class Date:
         else:
             raise ValueError('Value date must be string in next format: "year.month.day"')
 
-        day_res = 0
+        if year1 == year2 and month1 == month2:
+            day_res = day2 - day1
+        elif year1 == year2:
+            day_res = sum(Date.DAY_OF_MONTH[Date.is_leap_year(year1)][month1 - 1:month2 - 1]) - day1 + day2
+        else:
+            days_in_year1 = sum(Date.DAY_OF_MONTH[Date.is_leap_year(year1)][month1-1:]) - day1
+            days_in_years = sum(list(map(lambda x: sum(Date.DAY_OF_MONTH[Date.is_leap_year(x)]), range(year1 + 1, year2))))
+            days_in_year2 = sum(Date.DAY_OF_MONTH[Date.is_leap_year(year2)][:month2 - 1]) + day2
+
+            day_res = days_in_year1 + days_in_years + days_in_year2
 
         return f'{day_res} days between {date2} and {date1}'
 
 
 if __name__ == "__main__":
-    d1 = Date(2019, 9, 11)
-    print(d1)
-    print(repr(d1))
-    d2 = Date(2020, 2, 29)
-    print(d2)
-    # d3 = Date(2019, 2, 29)
-    # print(d3)
-    d2.add_year(2)
-    print(f'+2 year = {d2}')
+    # Сюда смотреть не надо - это промежуточные тесты для быстрой отладки в процессе написания кода.
+    # Все тесты  реализованы в tests_dete.py
 
-    # d2.add_month(2)
-    # print(f'+2 month = {d2}')
+    # d1 = Date(2019, 9, 11)
+    # print(d1)
+    # print(repr(d1))
+    # d2 = Date(2020, 2, 29)
+    # print(d2)
+    # # d3 = Date(2019, 2, 29)
+    # # print(d3)
+    # d2.add_year(2)
+    # print(f'+2 year = {d2}')
+    #
+    # # d2.add_month(2)
+    # # print(f'+2 month = {d2}')
+    # # d2.add_month(10)
+    # # print(f'+10 month = {d2}')
+    # d2.add_month(11)
+    # print(f'+11 month = {d2}')
+    # # d2.add_month(12)
+    # # print(f'+12 month = {d2}')
+    # d2.date = '2020.9.11'
+    # print(f'd2.date={d2.date}')
+    #
+    # print(d2.is_leap_year(2020))
+    #
     # d2.add_month(10)
-    # print(f'+10 month = {d2}')
-    d2.add_month(11)
-    print(f'+11 month = {d2}')
-    # d2.add_month(12)
-    # print(f'+12 month = {d2}')
-    d2.date = '2020.9.11'
-    print(f'd2.date={d2.date}')
+    # print(d2)
+    # d2.add_day(33)
+    # print(d2)
+    #
+    # d3 = Date(2019, 10, 10)
+    # d3.add_day(30)
+    # print(d3)
+    #
+    # d3.date2_date1('2222.9.11', '2111.9.11')
 
-    print(d2.is_leap_year(2020))
+    # ((31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31), (31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31))
+    year1, month1, day1 = 2019, 8, 10
+    delta1 = sum(Date.DAY_OF_MONTH[Date.is_leap_year(year1)][month1-1:]) - day1
+    print(delta1)   # must be 143
+    year2, month2, day2 = 2020, 9, 20
+    delta2 = sum(Date.DAY_OF_MONTH[Date.is_leap_year(year2)][:month2-1]) + day2
+    print(delta2)   # must be 264
+    delta = sum(list(map(lambda x: sum(Date.DAY_OF_MONTH[Date.is_leap_year(x)]), range(year1+1, year2))))
+    print(delta)
+    print(delta2 + delta1 + delta)
 
-    d2.add_month(10)
-    print(d2)
-    d2.add_day(33)
-    print(d2)
 
-    d3 = Date(2019, 10, 10)
-    d3.add_day(30)
-    print(d3)
-
-    d3.date2_date1('2222.9.11', '2111.9.11')

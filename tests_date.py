@@ -58,4 +58,10 @@ class TestDate(unittest.TestCase):
         self.assertEqual(repr(self.dt), 'Date(2020, 1, 9)')
 
     def test_date2_date1(self):
-        pass
+        self.assertEqual(Date.date2_date1('2020.09.20', '2010.08.10'), f'3694 days between 2020.09.20 and 2010.08.10')
+        self.assertEqual(Date.date2_date1('2020.01.20', '2010.08.10'), f'3450 days between 2020.01.20 and 2010.08.10')
+        self.assertEqual(Date.date2_date1('2020.09.20', '2019.08.10'), f'407 days between 2020.09.20 and 2019.08.10')
+        self.assertEqual(Date.date2_date1('2020.09.20', '2020.08.10'), f'41 days between 2020.09.20 and 2020.08.10')
+        self.assertEqual(Date.date2_date1('2020.09.20', '2020.08.30'), f'21 days between 2020.09.20 and 2020.08.30')
+        self.assertEqual(Date.date2_date1('2020.09.20', '2020.09.10'), f'10 days between 2020.09.20 and 2020.09.10')
+
