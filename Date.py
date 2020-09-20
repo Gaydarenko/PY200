@@ -131,7 +131,7 @@ class Date:
 
     def add_day(self, days):
         try:
-            self._day += days
+            self.day += days
         except ValueError:
             days -= self.DAY_OF_MONTH[self.is_leap_year(self._year)][self._month - 1] - self._day + 1
             self._day = 1
@@ -147,6 +147,9 @@ class Date:
         :param month: adding year
         :return: None
         """
+        if month < 0:
+            raise ValueError('Month value must be only positive')
+
         remain = 12 - self._month
         if month <= remain:
             self._month += month
@@ -166,6 +169,8 @@ class Date:
         :param year: adding year
         :return: None
         """
+        if year < 0:
+            raise ValueError('Month year must be only positive')
         self._year += year
         try:
             self.__is_valid_date(self._year, self._month, self._day)
@@ -174,13 +179,22 @@ class Date:
 
     @staticmethod
     def date2_date1(date2, date1):
-        # date2 = date2.split('.')
-        # if len(date2) == 3:
-        #     self.year, self.month, self.day = list(map(int, date2))
-        # else:
-        #     raise ValueError('Value date must be string in next format: "year.month.day"')
+        date2 = date2.split('.')
+        date1 = date1.split('.')
+        if len(date2) == 3 and len(date1) == 3:
+            try:
+                year2, month2, day2 = list(map(int, date2))
+                year1, month1, day1 = list(map(int, date1))
+                Date.__is_valid_date(year2, month2, day2)
+                Date.__is_valid_date(year1, month1, day1)
+            except TypeError:
+                return 'Value year, month, day must be integer"'
+        else:
+            raise ValueError('Value date must be string in next format: "year.month.day"')
 
-        pass    # не могу разобраться как вызвать тот же self.year, ...
+        day_res = 0
+
+        return f'{day_res} days between {date2} and {date1}'
 
 
 if __name__ == "__main__":

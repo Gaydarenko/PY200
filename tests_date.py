@@ -21,26 +21,41 @@ class TestDate(unittest.TestCase):
         self.assertEqual(self.dt.get_max_day(2020, 12), 31)
 
     def test_add_year(self):
+        self.assertEqual(repr(self.dt), 'Date(2019, 9, 15)')
         self.dt.add_year(1)
         self.assertEqual(repr(self.dt), 'Date(2020, 9, 15)')
         self.dt.add_year(11)
         self.assertEqual(repr(self.dt), 'Date(2031, 9, 15)')
+        self.assertRaises(ValueError, self.dt.add_year, -1)
 
     def test_add_month(self):
+        self.assertEqual(repr(self.dt), 'Date(2019, 9, 15)')
         self.dt.add_month(3)
         self.assertEqual(repr(self.dt), 'Date(2019, 12, 15)')
         self.dt.add_month(5)
         self.assertEqual(repr(self.dt), 'Date(2020, 5, 15)')
+        self.dt.add_month(12)
+        self.assertEqual(repr(self.dt), 'Date(2021, 5, 15)')
+        self.dt.add_month(360)
+        self.assertEqual(repr(self.dt), 'Date(2051, 5, 15)')
+        self.dt.add_month(8)
+        self.assertEqual(repr(self.dt), 'Date(2052, 1, 15)')
+        self.dt.add_month(12)
+        self.assertEqual(repr(self.dt), 'Date(2053, 1, 15)')
+        self.dt.add_month(11)
+        self.assertEqual(repr(self.dt), 'Date(2053, 12, 15)')
+        self.assertRaises(ValueError, self.dt.add_month, -1)
 
     def test_add_day(self):
+        self.assertEqual(repr(self.dt), 'Date(2019, 9, 15)')
         self.dt.add_day(5)
         self.assertEqual(repr(self.dt), 'Date(2019, 9, 20)')
-        # self.dt.add_day(20)
-        # self.assertEqual(repr(self.dt), 'Date(2019, 10, 10)')
-        # self.dt.add_day(30)
-        # self.assertEqual(repr(self.dt), 'Date(2019, 11, 9)')
-        # self.dt.add_day(61)
-        # self.assertEqual(repr(self.dt), 'Date(2020, 1, 9)')
+        self.dt.add_day(20)
+        self.assertEqual(repr(self.dt), 'Date(2019, 10, 10)')
+        self.dt.add_day(30)
+        self.assertEqual(repr(self.dt), 'Date(2019, 11, 9)')
+        self.dt.add_day(61)
+        self.assertEqual(repr(self.dt), 'Date(2020, 1, 9)')
 
     def test_date2_date1(self):
         pass
