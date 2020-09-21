@@ -122,11 +122,9 @@ class LinkedList:
         :param node: node value
         :return: node index or -1 if the value is not found
         """
-        index = -1
-        for current_node in self:
-            index += 1
-            if current_node == node:
-                return index
+        for current_node in enumerate(self):
+            if current_node[1] == node:
+                return current_node[0]
         else:
             return -1
 
@@ -191,8 +189,8 @@ if __name__ == '__main__':
 
     n1 = Node(99)
     print(n1.value)
-    l1.remove(n1)
-    print(l1)
+    # l1.remove(99)
+    # print(l1)
 
 
 
