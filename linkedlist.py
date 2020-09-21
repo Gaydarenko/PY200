@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 from node import Node
 
 
@@ -116,47 +116,48 @@ class LinkedList:
         self.__tail = None
         self.__len = 0
 
-    def find(self, node: Any) -> int:
+    def find(self, node: Node) -> int:
         """
         Finds the first occurrence of the specified node.
         :param node: node value
         :return: node index or -1 if the value is not found
         """
         for current_node in enumerate(self):
-            if current_node[1] == node:
+            if current_node[1] == node.value:
                 return current_node[0]
         else:
             return -1
 
-    def remove(self, node: Any):
+    def remove(self, node: Node):
         """
         Remove the first occurrence of the specified node.
         :param node: node value
         :return: ValueError if the value is not found
         """
-        prev_node = None
-        current_node = self.__head
-        print('!!!!!!!!!!!!!!')
 
-        if node == current_node:
-            current_node = current_node.next
-            self.__head = current_node
-            current_node.prev = None
+        if node.value == self.__head.value:
+            remove_node = self.__head
+            self.__head = self.__head.next
+            remove_node = None
+            self.__len -= 1
 
-        elif node == self.__tail:
-            current_node = self.__tail
-            current_node = current_node.prev
-            self.__tail = current_node
-            current_node.next = None
+        elif node.value == self.__tail.value:
+            remove_node = self.__tail
+            self.__tail = self.__tail.prev
+            remove_node = None
+            self.__len -= 1
 
         else:
-            for _ in range(self.__len - 1):
-                if current_node.next == node and not prev_node:   # исключаю проверку снова - вдруг след. знач. такое же
-                    prev_node = current_node
-                elif prev_node and current_node.prev == node:
-                    prev_node.next = current_node
-                    current_node.prev = prev_node
+            current_node = self.__head
+            for _ in range(self.__len - 2):
+                if current_node.next.value == node.value:
+                    next_node = current_node.next
+                    next_node = next_node.next
+                    current_node.next = next_node
+                    next_node.prev = current_node
+                    self.__len -= 1
                     break
+                current_node = current_node.next
             else:
                 raise ValueError
 
@@ -178,19 +179,18 @@ if __name__ == '__main__':
     print(l1)
     a = iter(l1)
 
-    for _ in range(len(l1)):
-        print(next(a))
-    print('')
+    # for _ in range(len(l1)):
+    #     print(next(a))
+    # print('')
 
-    print(l1.find(99))
-    print(l1.find(0))
-    print(l1.find(5))
-    print(l1.find(6))
+    print('!!!!!!')
+    print(l1.find(Node(99)))
+    print(l1.find(Node(0)))
+    print(l1.find(Node(5)))
+    print(l1.find(Node(6)))
 
-    n1 = Node(99)
-    print(n1.value)
-    # l1.remove(99)
-    # print(l1)
+    l1.remove(Node(4))
+    print(l1)
 
 
 
