@@ -156,7 +156,7 @@ class Date:
         else:
             remain = month - remain
             rem_of_div = remain % 12
-            self.year += 1 + remain // 12 - 1 if not rem_of_div else 0
+            self.year += 1 + remain // 12 - (1 if not rem_of_div else 0)
             self.month = 12 if not rem_of_div else rem_of_div
             try:
                 self.__is_valid_date(self._year, self._month, self._day)
@@ -178,6 +178,19 @@ class Date:
         except ValueError:
             self._day = self.DAY_OF_MONTH[self.is_leap_year(self._year)][self._month - 1]
 
+    @classmethod
+    def date_from_string(cls, value):
+        date = value.split('.')
+        if len(date) == 3:
+            try:
+                year, month, day = list(map(int, date))
+                cls.__is_valid_date(year, month, day)
+            except TypeError:
+                return 'Value year, month, day must be integer"'
+        else:
+            raise ValueError('Value date must be string in next format: "year.month.day"')
+        return year, month, day
+
     @staticmethod
     def date2_date1(date2: str, date1: str) -> str:
         """
@@ -186,18 +199,21 @@ class Date:
         :param date1: date value 1
         :return: string with amount of days
         """
-        date2_ = date2.split('.')
-        date1_ = date1.split('.')
-        if len(date2_) == 3 and len(date1_) == 3:
-            try:
-                year2, month2, day2 = list(map(int, date2_))
-                year1, month1, day1 = list(map(int, date1_))
-                Date.__is_valid_date(year2, month2, day2)
-                Date.__is_valid_date(year1, month1, day1)
-            except TypeError:
-                return 'Value year, month, day must be integer"'
-        else:
-            raise ValueError('Value date must be string in next format: "year.month.day"')
+        # date2_ = date2.split('.')
+        # date1_ = date1.split('.')
+        # if len(date2_) == 3 and len(date1_) == 3:
+        #     try:
+        #         year2, month2, day2 = list(map(int, date2_))
+        #         year1, month1, day1 = list(map(int, date1_))
+        #         Date.__is_valid_date(year2, month2, day2)
+        #         Date.__is_valid_date(year1, month1, day1)
+        #     except TypeError:
+        #         return 'Value year, month, day must be integer"'
+        # else:
+        #     raise ValueError('Value date must be string in next format: "year.month.day"')
+        year2, month2, day2 = Date.date_from_string(date2)
+        year1, month1, day1 = Date.date_from_string(date1)
+
 
         if year2 < year1 or year2 == year1 and month2 < month1 or year2 == year1 and month2 == month1 and day2 < day1:
             raise ValueError('date2 value must be more then date1 value')
@@ -218,7 +234,7 @@ class Date:
 
 if __name__ == "__main__":
     # Сюда смотреть не надо - это промежуточные тесты для быстрой отладки в процессе написания кода.
-    # Все тесты  реализованы в tests_dete.py
+    # Все тесты  реализованы в tests_date.py
 
     # d1 = Date(2019, 9, 11)
     # print(d1)
@@ -267,7 +283,7 @@ if __name__ == "__main__":
 
     d1 = Date(1473, 11, 21)
     # print(d1)
-    d1.add_month(13)
+    d1.add_month(5)
     # d1.add_month(1)
     print(d1)
 
