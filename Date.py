@@ -155,8 +155,9 @@ class Date:
             self._month += month
         else:
             remain = month - remain
-            self.year += 1 + remain // 12
-            self.month = remain % 12
+            rem_of_div = remain % 12
+            self.year += 1 + remain // 12 - 1 if not rem_of_div else 0
+            self.month = 12 if not rem_of_div else rem_of_div
             try:
                 self.__is_valid_date(self._year, self._month, self._day)
             except ValueError:
@@ -219,8 +220,8 @@ if __name__ == "__main__":
     # Сюда смотреть не надо - это промежуточные тесты для быстрой отладки в процессе написания кода.
     # Все тесты  реализованы в tests_dete.py
 
-    d1 = Date(2019, 9, 11)
-    print(d1)
+    # d1 = Date(2019, 9, 11)
+    # print(d1)
     # print(repr(d1))
     # d2 = Date(2020, 2, 29)
     # print(d2)
@@ -264,4 +265,9 @@ if __name__ == "__main__":
     # print(delta)
     # print(delta2 + delta1 + delta)
 
+    d1 = Date(1473, 11, 21)
+    # print(d1)
+    d1.add_month(13)
+    # d1.add_month(1)
+    print(d1)
 
