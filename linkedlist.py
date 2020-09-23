@@ -136,16 +136,10 @@ class LinkedList:
         """
 
         if node.value == self.__head.value:
-            remove_node = self.__head
             self.__head = self.__head.next
-            remove_node = None
-            self.__len -= 1
 
         elif node.value == self.__tail.value:
-            remove_node = self.__tail
             self.__tail = self.__tail.prev
-            remove_node = None
-            self.__len -= 1
 
         else:
             current_node = self.__head
@@ -161,9 +155,29 @@ class LinkedList:
             else:
                 raise ValueError
 
+        self.__len -= 1
 
     def delete(self, index):
-        ...
+        if index not in range(self.__len):
+            raise IndexError
+
+        if index == 0:
+            self.__head = self.__head.next
+
+        elif index == self.__len - 1:
+            self.__tail = self.__tail.prev
+
+        else:
+            current_node = self.__head
+            for _ in range(index - 1):
+                current_node = current_node.next
+
+            next_node = current_node.next
+            next_node = next_node.next
+            current_node.next = next_node
+            next_node.prev = current_node
+
+        self.__len -= 1
 
 
 if __name__ == '__main__':
@@ -189,7 +203,11 @@ if __name__ == '__main__':
     print(l1.find(Node(5)))
     print(l1.find(Node(6)))
 
-    l1.remove(Node(4))
+    # l1.remove(Node(5))
+    print(l1)
+    # l1.clear()
+    print(len(l1))
+    l1.delete(6)
     print(l1)
 
 

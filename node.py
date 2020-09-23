@@ -17,7 +17,7 @@ class Node:
 
     @property
     def next(self):
-        return self.__next
+        return self.__next if self.__next is not None else None
 
     @next.setter
     def next(self, next_):
@@ -28,7 +28,7 @@ class Node:
 
     @property
     def prev(self):
-        return self.__prev
+        return self.__prev() if self.__prev is not None else None
 
     @prev.setter
     def prev(self, prev_):
