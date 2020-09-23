@@ -58,12 +58,12 @@ class TestDate(unittest.TestCase):
         self.assertEqual(repr(self.dt), 'Date(2020, 1, 9)')
 
     def test_date2_date1(self):
-        self.assertEqual(Date.date2_date1('2020.09.20', '2010.08.10'), f'3694 days between 2020.09.20 and 2010.08.10')
-        self.assertEqual(Date.date2_date1('2020.01.20', '2010.08.10'), f'3450 days between 2020.01.20 and 2010.08.10')
-        self.assertEqual(Date.date2_date1('2020.09.20', '2019.08.10'), f'407 days between 2020.09.20 and 2019.08.10')
-        self.assertEqual(Date.date2_date1('2020.09.20', '2020.08.10'), f'41 days between 2020.09.20 and 2020.08.10')
-        self.assertEqual(Date.date2_date1('2020.09.20', '2020.08.30'), f'21 days between 2020.09.20 and 2020.08.30')
-        self.assertEqual(Date.date2_date1('2020.09.20', '2020.09.10'), f'10 days between 2020.09.20 and 2020.09.10')
-        self.assertEqual(Date.date2_date1('2020.09.20', '2020.09.20'), f'0 days between 2020.09.20 and 2020.09.20')
-        self.assertRaises(ValueError, Date.date2_date1, '2020.09.20', '2020.09.30')
+        self.assertEqual(Date.date2_date1(Date(2020, 9, 20), Date(2010, 8, 10)), f'3694 days between 20.9.2020 and 10.8.2010')
+        self.assertEqual(Date.date2_date1(Date(2020, 1, 20), Date(2010, 8, 10)), f'3450 days between 20.1.2020 and 10.8.2010')
+        self.assertEqual(Date.date2_date1(Date(2020, 9, 20), Date(2019, 8, 10)), f'407 days between 20.9.2020 and 10.8.2019')
+        self.assertEqual(Date.date2_date1(Date(2020, 9, 20), Date(2020, 8, 10)), f'41 days between 20.9.2020 and 10.8.2020')
+        self.assertEqual(Date.date2_date1(Date(2020, 9, 20), Date(2020, 8, 30)), f'21 days between 20.9.2020 and 30.8.2020')
+        self.assertEqual(Date.date2_date1(Date(2020, 9, 20), Date(2020, 9, 10)), f'10 days between 20.9.2020 and 10.9.2020')
+        self.assertEqual(Date.date2_date1(Date(2020, 9, 20), Date(2020, 9, 20)), f'0 days between 20.9.2020 and 20.9.2020')
+        self.assertRaises(ValueError, Date.date2_date1, Date(2020, 9, 20), Date(2020, 9, 30))
 

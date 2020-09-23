@@ -178,53 +178,39 @@ class Date:
         except ValueError:
             self._day = self.DAY_OF_MONTH[self.is_leap_year(self._year)][self._month - 1]
 
-    @classmethod
-    def date_from_string(cls, value):
-        date = value.split('.')
-        if len(date) == 3:
-            try:
-                year, month, day = list(map(int, date))
-                cls.__is_valid_date(year, month, day)
-            except TypeError:
-                return 'Value year, month, day must be integer"'
-        else:
-            raise ValueError('Value date must be string in next format: "year.month.day"')
-        return year, month, day
+    # @classmethod
+    # def date_from_string(cls, value):
+    #     date = value.split('.')
+    #     if len(date) == 3:
+    #         try:
+    #             year, month, day = list(map(int, date))
+    #             cls.__is_valid_date(year, month, day)
+    #         except TypeError:
+    #             return 'Value year, month, day must be integer"'
+    #     else:
+    #         raise ValueError('Value date must be string in next format: "year.month.day"')
+    #     return year, month, day
 
     @staticmethod
-    def date2_date1(date2: str, date1: str) -> str:
+    def date2_date1(date2, date1) -> str:
         """
         The function counts amount of days between two dates.
-        :param date2: date value 2
-        :param date1: date value 1
+        :param date2: object Date
+        :param date1: object Date
         :return: string with amount of days
         """
-        # date2_ = date2.split('.')
-        # date1_ = date1.split('.')
-        # if len(date2_) == 3 and len(date1_) == 3:
-        #     try:
-        #         year2, month2, day2 = list(map(int, date2_))
-        #         year1, month1, day1 = list(map(int, date1_))
-        #         Date.__is_valid_date(year2, month2, day2)
-        #         Date.__is_valid_date(year1, month1, day1)
-        #     except TypeError:
-        #         return 'Value year, month, day must be integer"'
-        # else:
-        #     raise ValueError('Value date must be string in next format: "year.month.day"')
-        year2, month2, day2 = Date.date_from_string(date2)
-        year1, month1, day1 = Date.date_from_string(date1)
-
-        if year2 < year1 or year2 == year1 and (month2 < month1 or month2 == month1 and day2 < day1):
+        if date2.year < date1.year or date2.year == date1.year and \
+                (date2.month < date1.month or date2.month == date1.month and date2.day < date1.day):
             raise ValueError('date2 value must be more then date1 value')
 
-        if year1 == year2 and month1 == month2:
-            day_res = day2 - day1
-        elif year1 == year2:
-            day_res = sum(Date.DAY_OF_MONTH[Date.is_leap_year(year1)][month1 - 1:month2 - 1]) - day1 + day2
+        if date2.year == date1.year and date2.month == date1.month:
+            day_res = date2.day - date1.day
+        elif date2.year == date1.year:
+            day_res = sum(Date.DAY_OF_MONTH[Date.is_leap_year(date1.year)][date1.month - 1:date2.month - 1]) - date1.day + date2.day
         else:
-            days_in_year1 = sum(Date.DAY_OF_MONTH[Date.is_leap_year(year1)][month1-1:]) - day1
-            days_in_years = sum(list(map(lambda x: sum(Date.DAY_OF_MONTH[Date.is_leap_year(x)]), range(year1 + 1, year2))))
-            days_in_year2 = sum(Date.DAY_OF_MONTH[Date.is_leap_year(year2)][:month2 - 1]) + day2
+            days_in_year1 = sum(Date.DAY_OF_MONTH[Date.is_leap_year(date1.year)][date1.month - 1:]) - date1.day
+            days_in_years = sum(list(map(lambda x: sum(Date.DAY_OF_MONTH[Date.is_leap_year(x)]), range(date1.year + 1, date2.year))))
+            days_in_year2 = sum(Date.DAY_OF_MONTH[Date.is_leap_year(date2.year)][:date2.month - 1]) + date2.day
 
             day_res = days_in_year1 + days_in_years + days_in_year2
 
@@ -235,39 +221,9 @@ if __name__ == "__main__":
     # Сюда смотреть не надо - это промежуточные тесты для быстрой отладки в процессе написания кода.
     # Все тесты  реализованы в tests_date.py
 
-    # d1 = Date(2019, 9, 11)
-    # print(d1)
-    # print(repr(d1))
-    # d2 = Date(2020, 2, 29)
-    # print(d2)
-    # # d3 = Date(2019, 2, 29)
-    # # print(d3)
-    # d2.add_year(2)
-    # print(f'+2 year = {d2}')
-    #
-    # # d2.add_month(2)
-    # # print(f'+2 month = {d2}')
-    # # d2.add_month(10)
-    # # print(f'+10 month = {d2}')
-    # d2.add_month(11)
-    # print(f'+11 month = {d2}')
-    # # d2.add_month(12)
-    # # print(f'+12 month = {d2}')
-    # d2.date = '2020.9.11'
-    # print(f'd2.date={d2.date}')
-    #
-    # print(d2.is_leap_year(2020))
-    #
-    # d2.add_month(10)
-    # print(d2)
-    # d2.add_day(33)
-    # print(d2)
-    #
-    # d3 = Date(2019, 10, 10)
-    # d3.add_day(30)
-    # print(d3)
-    #
-    # d3.date2_date1('2222.9.11', '2111.9.11')
+    d2 = Date(2222, 9, 15)
+    d1 = Date(2222, 8, 15)
+    print(Date.date2_date1(d2, d1))
 
     # ((31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31), (31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31))
     # year1, month1, day1 = 2019, 8, 10
@@ -284,9 +240,7 @@ if __name__ == "__main__":
     # d1.add_month(11)
     # print(d1)
 
-
-    for i in range(1,100):
-        d1 = Date(838, 3, 31)
-        d1.add_month(i)
-        print(d1)
-
+    # for i in range(1,100):
+    #     d1 = Date(838, 3, 31)
+    #     d1.add_month(i)
+    #     print(d1)
