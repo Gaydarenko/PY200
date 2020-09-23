@@ -97,15 +97,15 @@ class LinkedList:
             yield current_node.value
             current_node = current_node.next
 
-    # def __reversed__(self):
-    #     """
-    #     Redetermine reversed iterator
-    #     :return: previous node
-    #     """
-    #     current_node = self.__tail
-    #     for _ in range(self.__len):
-    #         yield current_node.value
-    #         current_node = current_node.prev
+    def __reversed__(self):
+        """
+        Redetermine reversed iterator
+        :return: previous node
+        """
+        current_node = self.__tail
+        for _ in range(self.__len):
+            yield current_node.value
+            current_node = current_node.prev
 
     def clear(self) -> None:
         """
