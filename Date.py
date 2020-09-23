@@ -117,7 +117,7 @@ class Date:
 
     @month.setter
     def month(self, value):
-        self.__is_valid_date(self._year, value, self._day)
+        # self.__is_valid_date(self._year, value, self._day)
         self._month = value
 
     @property
@@ -158,11 +158,11 @@ class Date:
             rem_of_div = remain % 12
             self.year += 1 + remain // 12 - (1 if not rem_of_div else 0)
             self.month = 12 if not rem_of_div else rem_of_div
-            try:
-                self.__is_valid_date(self._year, self._month, self._day)
-            except ValueError:
-                self._day = self.DAY_OF_MONTH[self.is_leap_year(self._year)][self._month - 1]   # присвоение последнего
-                                                                                                # дня этого месяца
+        try:
+            self.__is_valid_date(self._year, self._month, self._day)
+        except ValueError:
+            self._day = self.DAY_OF_MONTH[self.is_leap_year(self._year)][self._month - 1]   # присвоение последнего
+                                                                                            # дня этого месяца
 
     def add_year(self, year: int) -> None:
         """
@@ -214,8 +214,7 @@ class Date:
         year2, month2, day2 = Date.date_from_string(date2)
         year1, month1, day1 = Date.date_from_string(date1)
 
-
-        if year2 < year1 or year2 == year1 and month2 < month1 or year2 == year1 and month2 == month1 and day2 < day1:
+        if year2 < year1 or year2 == year1 and (month2 < month1 or month2 == month1 and day2 < day1):
             raise ValueError('date2 value must be more then date1 value')
 
         if year1 == year2 and month1 == month2:
@@ -281,9 +280,13 @@ if __name__ == "__main__":
     # print(delta)
     # print(delta2 + delta1 + delta)
 
-    d1 = Date(1473, 11, 21)
+    # d1 = Date(838, 3, 31)
+    # d1.add_month(11)
     # print(d1)
-    d1.add_month(5)
-    # d1.add_month(1)
-    print(d1)
+
+
+    for i in range(1,100):
+        d1 = Date(838, 3, 31)
+        d1.add_month(i)
+        print(d1)
 
