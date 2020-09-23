@@ -1,4 +1,5 @@
 from typing import Any
+from weakref import ref
 
 
 class Node:
@@ -34,7 +35,7 @@ class Node:
         if not isinstance(prev_, Node):
             raise TypeError
 
-        self.__prev = prev_
+        self.__prev = ref(prev_)
 
     def __str__(self):
         return f"{repr(self.__prev)} << Value: {self.value} >> {repr(self.__next)}"

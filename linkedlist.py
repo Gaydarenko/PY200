@@ -60,9 +60,9 @@ class LinkedList:
                     insert_node.next = current_node.next    # перенапрвление прямой ссылки
                     current_node.next = insert_node
 
-                    current_node = insert_node.next     # перенос фокуса внимания на ноду после вставки
+                    insert_node.prev = current_node  # перенаправление обратной ссылки
 
-                    insert_node.prev = current_node.prev    # перенаправление обратной ссылки
+                    current_node = insert_node.next     # перенос фокуса внимания на ноду после вставки
                     current_node.prev = insert_node
 
                     self.__len += 1
