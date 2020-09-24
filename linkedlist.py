@@ -24,8 +24,8 @@ class LinkedList:
     def __repr__(self):
         return '<->'.join(str(n) for n in self)
 
-    # @staticmethod
-    def verification_index(self, index: int) -> None:
+    @staticmethod
+    def verification_index(index: int) -> None:
         """
         Verification of requirements for index
         :param index: Node position in LinkedList
