@@ -138,9 +138,6 @@ class LinkedList:
         if node.value == self.__head.value:
             self.__head = self.__head.next
 
-        elif node.value == self.__tail.value:
-            self.__tail = self.__tail.prev
-
         else:
             current_node = self.__head
             for _ in range(self.__len - 2):
@@ -149,11 +146,14 @@ class LinkedList:
                     next_node = next_node.next
                     current_node.next = next_node
                     next_node.prev = current_node
-                    self.__len -= 1
                     break
                 current_node = current_node.next
+
             else:
-                raise ValueError
+                if node.value == self.__tail.value:
+                    self.__tail = self.__tail.prev
+                else:
+                    raise ValueError
 
         self.__len -= 1
 
@@ -204,12 +204,16 @@ if __name__ == '__main__':
     print(l1.find(Node(5)))
     print(l1.find(Node(6)))
 
-    # l1.remove(Node(5))
-    print(l1)
+    print(l1, f'len = {len(l1)}')
+    l1.remove(Node(4))
+    print(l1, f'len = {len(l1)}')
+    l1.remove(Node(3))
+    print(l1, f'len = {len(l1)}')
+
     # l1.clear()
-    print(len(l1))
-    l1.delete(6)
-    print(l1)
+    # print(len(l1))
+    # l1.delete(6)
+    # print(l1)
 
 
 
