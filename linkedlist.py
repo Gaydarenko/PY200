@@ -116,7 +116,7 @@ class LinkedList:
         self.__tail = None
         self.__len = 0
 
-    def find(self, node: Node) -> int:
+    def find(self, node: Optional["Node"]) -> int:
         """
         Finds the first occurrence of the specified node.
         :param node: node value
@@ -128,7 +128,7 @@ class LinkedList:
         else:
             return -1
 
-    def remove(self, node: Node):
+    def remove(self, node: Optional["Node"]) -> None:
         """
         Remove the first occurrence of the specified node.
         :param node: node value
@@ -157,7 +157,7 @@ class LinkedList:
 
         self.__len -= 1
 
-    def delete(self, index):
+    def delete(self, index: int) -> None:
         if index not in range(self.__len):
             raise IndexError
 
@@ -166,6 +166,7 @@ class LinkedList:
 
         elif index == self.__len - 1:
             self.__tail = self.__tail.prev
+            self.__tail.next = None
 
         else:
             current_node = self.__head

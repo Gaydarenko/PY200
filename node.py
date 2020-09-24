@@ -17,11 +17,11 @@ class Node:
 
     @property
     def next(self):
-        return self.__next if self.__next is not None else None
+        return self.__next
 
     @next.setter
     def next(self, next_):
-        if not isinstance(next_, Node):
+        if not isinstance(next_, (Node, type(None))):
             raise TypeError
 
         self.__next = next_
