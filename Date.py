@@ -126,7 +126,7 @@ class Date:
 
     @year.setter
     def year(self, value):
-        self.__is_valid_date(value, self._month, self._day)
+        # self.__is_valid_date(value, self._month, self._day)
         self._year = value
 
     def add_day(self, days):
@@ -221,9 +221,9 @@ if __name__ == "__main__":
     # Сюда смотреть не надо - это промежуточные тесты для быстрой отладки в процессе написания кода.
     # Все тесты  реализованы в tests_date.py
 
-    d2 = Date(2222, 9, 15)
-    d1 = Date(2222, 8, 15)
-    print(Date.date2_date1(d2, d1))
+    # d2 = Date(2222, 9, 15)
+    # d1 = Date(2222, 8, 15)
+    # print(Date.date2_date1(d2, d1))
 
     # ((31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31), (31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31))
     # year1, month1, day1 = 2019, 8, 10
@@ -240,7 +240,10 @@ if __name__ == "__main__":
     # d1.add_month(11)
     # print(d1)
 
-    # for i in range(1,100):
-    #     d1 = Date(838, 3, 31)
-    #     d1.add_month(i)
-    #     print(d1)
+    for i in range(1, 200):
+        d1 = Date(580, 2, 29)
+        d1.add_month(i)
+        print(d1)
+
+    # d1 = Date(580, 2, 29)
+    # d1.add_month(1)
