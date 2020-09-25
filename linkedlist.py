@@ -158,11 +158,17 @@ class LinkedList:
         self.__len -= 1
 
     def delete(self, index: int) -> None:
+        """
+        Delete node with index
+        :param index: node index
+        :return: None
+        """
         if index not in range(self.__len):
             raise IndexError
 
         if index == 0:
             self.__head = self.__head.next
+            self.__head.prev = None
 
         elif index == self.__len - 1:
             self.__tail = self.__tail.prev
