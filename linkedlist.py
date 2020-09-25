@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 from node import Node
 
 
@@ -11,8 +11,7 @@ class LinkedList:
         """
         Variables initialization
         """
-        self.__head = None
-        self.__tail = None
+        self.__head = self.__tail = None
         self.__len = 0
 
     def __len__(self):
@@ -22,8 +21,11 @@ class LinkedList:
         """
         return self.__len
 
-    # @staticmethod
-    def verification(self, index: int) -> None:
+    def __repr__(self):
+        return '<->'.join(str(n) for n in self)
+
+    @staticmethod
+    def verification_index(index: int) -> None:
         """
         Verification of requirements for index
         :param index: Node position in LinkedList
@@ -41,16 +43,32 @@ class LinkedList:
         :param value: inserting node
         :return: None
         """
-        self.verification(index)
+        self.verification_index(index)
         insert_node = Node(value)
 
-        if self.__len == 0:         # пустой список
-            self.__head = insert_node
-            self.__tail = self.__head
-            self.__len += 1
-        elif index > self.__len:    # индекс за пределами списка
+        if not self.__len or index >= self.__len:         # пустой список или индекс за пределами списка
             self.append(value)
-        # TODO insert in center     # индекс в середине списка
+        elif index == 0:
+            insert_node.next = self.__head
+            self.__head.prev = insert_node
+            self.__head = insert_node
+            self.__len += 1
+        else:
+            current_node = self.__head
+            for i in range(self.__len):
+                if i == index - 1:  # определение ноды, после которой необходимо произвести вставку
+                    insert_node.next = current_node.next    # перенапрвление прямой ссылки
+                    current_node.next = insert_node
+
+                    insert_node.prev = current_node  # перенаправление обратной ссылки
+
+                    current_node = insert_node.next     # перенос фокуса внимания на ноду после вставки
+                    current_node.prev = insert_node
+
+                    self.__len += 1
+                    break
+
+                current_node = current_node.next
 
     def append(self, value: Any) -> None:
         """
@@ -61,12 +79,13 @@ class LinkedList:
         append_node = Node(value)
 
         if not self.__len:
-            self.insert(0, value)
+            self.__head = append_node
+            self.__tail = self.__head
         else:
             append_node.prev = self.__tail
             self.__tail.next = append_node
             self.__tail = append_node
-            self.__len += 1
+        self.__len += 1
 
     def __iter__(self):
         """
@@ -78,6 +97,16 @@ class LinkedList:
             yield current_node.value
             current_node = current_node.next
 
+    def __reversed__(self):
+        """
+        Redetermine reversed iterator
+        :return: previous node
+        """
+        current_node = self.__tail
+        for _ in range(self.__len):
+            yield current_node.value
+            current_node = current_node.prev
+
     def clear(self) -> None:
         """
         Clear LinkedList
@@ -87,21 +116,115 @@ class LinkedList:
         self.__tail = None
         self.__len = 0
 
-    def find(self, node):
-        ...
+    def find(self, node: Optional["Node"]) -> int:
+        """
+        Finds the first occurrence of the specified node.
+        :param node: node value
+        :return: node index or -1 if the value is not found
+        """
+        for current_node in enumerate(self):
+            if current_node[1] == node.value:
+                return current_node[0]
+        else:
+            return -1
 
-    def remove(self, node):
-        ...
+    def remove(self, node: Optional["Node"]) -> None:
+        """
+        Remove the first occurrence of the specified node.
+        :param node: node value
+        :return: ValueError if the value is not found
+        """
 
-    def delete(self, index):
-        ...
+        if node.value == self.__head.value:
+            self.__head = self.__head.next
+
+        else:
+            current_node = self.__head
+            for _ in range(self.__len - 2):
+                if current_node.next.value == node.value:
+                    next_node = current_node.next
+                    next_node = next_node.next
+                    current_node.next = next_node
+                    next_node.prev = current_node
+                    break
+                current_node = current_node.next
+
+            else:
+                if node.value == self.__tail.value:
+                    self.__tail = self.__tail.prev
+                else:
+                    raise ValueError
+
+        self.__len -= 1
+
+    def delete(self, index: int) -> None:
+        """
+        Delete node with index
+        :param index: node index
+        :return: None
+        """
+        if index not in range(self.__len):
+            raise IndexError
+
+        if index == 0:
+            self.__head = self.__head.next
+            self.__head.prev = None
+
+        elif index == self.__len - 1:
+            self.__tail = self.__tail.prev
+            self.__tail.next = None
+
+        else:
+            current_node = self.__head
+            for _ in range(index - 1):
+                current_node = current_node.next
+
+            next_node = current_node.next
+            next_node = next_node.next
+            current_node.next = next_node
+            next_node.prev = current_node
+
+        self.__len -= 1
 
 
 if __name__ == '__main__':
     l1 = LinkedList()
     l1.append(1)
     l1.append(2)
+    l1.insert(12, 3)
+    l1.append(4)
+    l1.insert(9, 5)
+    l1.insert(0, 0)
+    l1.insert(1, 99)
     print(dir(l1))
+    print(l1)
+    a = iter(l1)
 
-    for value in l1:
-        print(value)
+    # for _ in range(len(l1)):
+    #     print(next(a))
+    # print('')
+
+    print('!!!!!!')
+    print(l1.find(Node(99)))
+    print(l1.find(Node(0)))
+    print(l1.find(Node(5)))
+    print(l1.find(Node(6)))
+
+    print(l1, f'len = {len(l1)}')
+    l1.remove(Node(4))
+    print(l1, f'len = {len(l1)}')
+    l1.remove(Node(3))
+    print(l1, f'len = {len(l1)}')
+
+    # l1.clear()
+    # print(len(l1))
+    # l1.delete(6)
+    # print(l1)
+
+
+
+
+    # print(reversed(next(l1)))
+
+    # for value in l1:
+    #     print(value)
