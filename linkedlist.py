@@ -1,5 +1,6 @@
 from typing import Any, Optional
 from node import Node
+from Drivers import IStructureDriver
 
 
 class LinkedList:
@@ -220,7 +221,9 @@ class LinkedList:
             self.append(node["value"])
             id_head = id(node["next_node"]) if node["next_node"] else None
 
-    # def get_sd_driver(self, driver_name: str): SDBuilder
+    # def set_structure_driver(self, structure_driver: IStructureDriver):
+    #     # driver_name = input("Please insert driver name > ")
+    #     ...
 
 
 if __name__ == '__main__':

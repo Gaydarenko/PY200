@@ -40,7 +40,7 @@ class PICKLEFileDriver(IStructureDriver):
             pickle.dump(value, file)
 
 
-class JSONStringdriver(IStructureDriver):
+class JSONStringDriver(IStructureDriver):
     def __init__(self, s: str = "{}"):
         self.string = s
 
@@ -52,6 +52,30 @@ class JSONStringdriver(IStructureDriver):
 
     def write(self, value: Dict):
         return json.dumps(value)
+
+
+class SDBuilder:
+    def build(self):
+        raise NotImplementedError
+
+
+class JSONFileBuilder(SDBuilder):
+    def build(self):
+        file_name = input("Enter filename without extension")
+        return JSONFileDriver(file_name + ".json")
+
+
+class PICKLEFileBuilder(SDBuilder):
+    def build(self):
+        file_name = input("Enter filename without extension")
+        return PICKLEFileDriver(file_name + ".pickle")
+
+
+class JSONStringBuilder(SDBuilder):
+    def build(self):
+        string = input("Enter dictionary as string ('{keys: items}')")
+        return JSONStringDriver(string)
+
 
 obj = {
     "a": [
