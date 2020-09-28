@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict
 import json
 import pickle
+from linkedlist import LinkedList
 
 
 class IStructureDriver(ABC):
@@ -80,19 +81,20 @@ class JSONStringBuilder(SDBuilder):
 class SDFabric:
     @staticmethod
     def get_sd_driver(driver_name: str, t=True):
-        while t:
-            if driver_name == "JSONFileDriver":
-                return JSONFileBuilder()
-            elif driver_name == "PICKLEFileDriver":
-                return PICKLEFileBuilder()
-            elif driver_name == "JSONStringDriver":
-                return JSONStringBuilder()
-            else:
-                y_n = input("Wrong name driver. Are you want try again? (y/n")
-                if y_n in ('y', 'yes', 'Y', 'Yes'):
-                    driver_name = input("Please inter driver name")
-                else:
-                    t = None
+        builders = {
+            "JSONFileDriver": JSONFileBuilder,
+            "PICKLEFileDriver": PICKLEFileBuilder,
+            "JSONStringDriver": JSONStringBuilder
+        }
+
+        driver = builders.get(driver_name)
+        if driver:
+            return driver()
+        else:
+            y_n = input("Wrong name driver. Are you want try again? (y/n")
+            if y_n in ('y', 'yes', 'Y', 'Yes'):
+                driver_name = input("Please inter driver name")
+                SDFabric.get_sd_driver(driver_name)
 
 
 if __name__ == "__main__":
@@ -121,3 +123,4 @@ if __name__ == "__main__":
     driver_name = input("Please enter driver name > ")
     builder = SDFabric().get_sd_driver(driver_name)
     sd = builder.build()
+    l1 = LinkedList()
