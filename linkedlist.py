@@ -97,6 +97,13 @@ class LinkedList:
             yield current_node.value
             current_node = current_node.next
 
+    def _node_iter(self):
+        current_node = self.__head
+        for _ in range(self.__len):
+            yield current_node
+            current_node = current_node.next
+
+
     def __reversed__(self):
         """
         Redetermine reversed iterator
@@ -186,6 +193,25 @@ class LinkedList:
 
         self.__len -= 1
 
+    def save(self) -> dict:
+        """
+        Transforms node list to dictionary with nodes for save in some file.
+        :return: dict
+        """
+        linked_list = {}
+        for node in self._node_iter():
+            linked_list[id(node)] = {
+                "value": node.value,
+                "next_node": node.next if node.next else None,
+                "prev_node": node.prev if node.prev else None
+            }
+        return {"head": id(self.__head), "nodes": linked_list, "tail": id(self.__tail)}
+
+    def load(self, new_nodes: dict):
+        self.clear()
+        ...
+
+    # def get_sd_driver(self, driver_name: str): SDBuilder
 
 if __name__ == '__main__':
     l1 = LinkedList()
@@ -200,21 +226,23 @@ if __name__ == '__main__':
     print(l1)
     a = iter(l1)
 
+    print(l1.save())
+
     # for _ in range(len(l1)):
     #     print(next(a))
     # print('')
 
-    print('!!!!!!')
-    print(l1.find(Node(99)))
-    print(l1.find(Node(0)))
-    print(l1.find(Node(5)))
-    print(l1.find(Node(6)))
-
-    print(l1, f'len = {len(l1)}')
-    l1.remove(Node(4))
-    print(l1, f'len = {len(l1)}')
-    l1.remove(Node(3))
-    print(l1, f'len = {len(l1)}')
+    # print('!!!!!!')
+    # print(l1.find(Node(99)))
+    # print(l1.find(Node(0)))
+    # print(l1.find(Node(5)))
+    # print(l1.find(Node(6)))
+    #
+    # print(l1, f'len = {len(l1)}')
+    # l1.remove(Node(4))
+    # print(l1, f'len = {len(l1)}')
+    # l1.remove(Node(3))
+    # print(l1, f'len = {len(l1)}')
 
     # l1.clear()
     # print(len(l1))

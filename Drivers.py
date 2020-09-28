@@ -32,11 +32,11 @@ class PICKLEFileDriver(IStructureDriver):
         self.filename = filename
 
     def read(self) -> Dict:
-        with open(self.filename) as file:
+        with open(self.filename, "rb") as file:
             return pickle.load(file)
 
     def write(self, value: Dict):
-        with open(self.filename, "w") as file:
+        with open(self.filename, "wb") as file:
             pickle.dump(value, file)
 
 
@@ -45,16 +45,13 @@ class JSONStringdriver(IStructureDriver):
         self.string = s
 
     def __str__(self):
-        return f"{self.string}"
+        return self.string
 
     def read(self) -> Dict:
         return json.loads(self.string)
 
     def write(self, value: Dict):
         return json.dumps(value)
-
-
-
 
 obj = {
     "a": [
@@ -77,3 +74,4 @@ obj2 = fd.read()
 print(obj2)
 obj2["value"] = tuple(obj2["value"])
 assert obj == obj2
+# print(obj == obj2)
