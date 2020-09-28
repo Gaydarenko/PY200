@@ -62,19 +62,19 @@ class SDBuilder:
 
 class JSONFileBuilder(SDBuilder):
     def build(self):
-        file_name = input("Enter filename without extension")
+        file_name = input("Enter filename without extension > ")
         return JSONFileDriver(file_name + ".json")
 
 
 class PICKLEFileBuilder(SDBuilder):
     def build(self):
-        file_name = input("Enter filename without extension")
+        file_name = input("Enter filename without extension > ")
         return PICKLEFileDriver(file_name + ".pickle")
 
 
 class JSONStringBuilder(SDBuilder):
     def build(self):
-        string = input("Enter dictionary as string ('{keys: items}')")
+        string = input("Enter dictionary as string ('{keys: items}') > ")
         return JSONStringDriver(string)
 
 
@@ -91,9 +91,9 @@ class SDFabric:
         if driver:
             return driver()
         else:
-            y_n = input("Wrong name driver. Are you want try again? (y/n")
+            y_n = input("Wrong name driver. Are you want try again? (y/n)")
             if y_n in ('y', 'yes', 'Y', 'Yes'):
-                driver_name = input("Please inter driver name")
+                driver_name = input("Please inter driver name > ")
                 SDFabric.get_sd_driver(driver_name)
 
 

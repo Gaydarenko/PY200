@@ -222,6 +222,10 @@ class LinkedList:
             self.append(node["value"])
             id_head = id(node["next_node"]) if node["next_node"] else None
 
+    def set_structure_driver(self, structure_driver):
+        data = self.save()
+        print(data)
+        structure_driver.write(data)
 
 
 
@@ -250,7 +254,26 @@ if __name__ == '__main__':
     builder = Drivers.SDFabric().get_sd_driver(driver_name)
     sd = builder.build()
 
+    l1.set_structure_driver(sd)
+
     print(l1)
+    # obj = {
+    #     "a": [
+    #         {
+    #             "a": 1,
+    #             "b": True,
+    #             "c": "some string"
+    #         },
+    #         {
+    #             "afff": None,
+    #             "caaa": "some string 2"
+    #         }
+    #     ],
+    #     "value": (1, 2, 3)
+    # }
+    # sd.write(obj)
+
+
 
     # for _ in range(len(l1)):
     #     print(next(a))
