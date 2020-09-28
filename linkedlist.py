@@ -103,7 +103,6 @@ class LinkedList:
             yield current_node
             current_node = current_node.next
 
-
     def __reversed__(self):
         """
         Redetermine reversed iterator
@@ -208,10 +207,21 @@ class LinkedList:
         return {"head": id(self.__head), "nodes": linked_list, "tail": id(self.__tail)}
 
     def load(self, new_nodes: dict):
+        """
+        Load data from some source and create new linked list.
+        :param new_nodes: dictionary with nodes
+        :return: None
+        """
         self.clear()
-        ...
+        id_head = new_nodes["head"]
+
+        for _ in range(len(new_nodes["nodes"])):
+            node = new_nodes["nodes"].pop(id_head)
+            self.append(node["value"])
+            id_head = id(node["next_node"]) if node["next_node"] else None
 
     # def get_sd_driver(self, driver_name: str): SDBuilder
+
 
 if __name__ == '__main__':
     l1 = LinkedList()
@@ -223,10 +233,16 @@ if __name__ == '__main__':
     l1.insert(0, 0)
     l1.insert(1, 99)
     print(dir(l1))
-    print(l1)
+    # print(l1)
     a = iter(l1)
 
-    print(l1.save())
+    print(l1)
+    d1 = l1.save()
+    print(d1)
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    l1.clear()
+    l1.load(d1)
+    print(l1)
 
     # for _ in range(len(l1)):
     #     print(next(a))
@@ -248,9 +264,6 @@ if __name__ == '__main__':
     # print(len(l1))
     # l1.delete(6)
     # print(l1)
-
-
-
 
     # print(reversed(next(l1)))
 
