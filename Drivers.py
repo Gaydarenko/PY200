@@ -77,25 +77,47 @@ class JSONStringBuilder(SDBuilder):
         return JSONStringDriver(string)
 
 
-obj = {
-    "a": [
-        {
-            "a": 1,
-            "b": True,
-            "c": "some string"
-        },
-        {
-            "afff": None,
-            "caaa": "some string 2"
-        }
-    ],
-    "value": (1, 2, 3)
-}
+class SDFabric:
+    @staticmethod
+    def get_sd_driver(driver_name: str, t=True):
+        while t:
+            if driver_name == "JSONFileDriver":
+                return JSONFileBuilder()
+            elif driver_name == "PICKLEFileDriver":
+                return PICKLEFileBuilder()
+            elif driver_name == "JSONStringDriver":
+                return JSONStringBuilder()
+            else:
+                y_n = input("Wrong name driver. Are you want try again? (y/n")
+                if y_n in ('y', 'yes', 'Y', 'Yes'):
+                    driver_name = input("Please inter driver name")
+                else:
+                    t = None
 
-fd = JSONFileDriver("some_file.json")
-fd.write(obj)
-obj2 = fd.read()
-print(obj2)
-obj2["value"] = tuple(obj2["value"])
-assert obj == obj2
-# print(obj == obj2)
+
+if __name__ == "__main__":
+    # obj = {
+    #     "a": [
+    #         {
+    #             "a": 1,
+    #             "b": True,
+    #             "c": "some string"
+    #         },
+    #         {
+    #             "afff": None,
+    #             "caaa": "some string 2"
+    #         }
+    #     ],
+    #     "value": (1, 2, 3)
+    # }
+    #
+    # fd = JSONFileDriver("some_file.json")
+    # fd.write(obj)
+    # obj2 = fd.read()
+    # print(obj2)
+    # obj2["value"] = tuple(obj2["value"])
+    # assert obj == obj2
+    # # print(obj == obj2)
+    driver_name = input("Please enter driver name > ")
+    builder = SDFabric().get_sd_driver(driver_name)
+    sd = builder.build()
