@@ -203,8 +203,8 @@ class LinkedList:
         for node in self._node_iter():
             linked_list[id(node)] = {
                 "value": node.value,
-                "next_node": node.next if node.next else None,
-                "prev_node": node.prev if node.prev else None
+                "next_node": id(node.next) if node.next else None,
+                "prev_node": id(node.prev) if node.prev else None
             }
         return {"head": id(self.__head), "nodes": linked_list, "tail": id(self.__tail)}
 
@@ -219,13 +219,13 @@ class LinkedList:
 
         for _ in range(len(new_nodes["nodes"])):
             node = new_nodes["nodes"].pop(id_head)
-            self.append(node["value"])
-            id_head = id(node["next_node"]) if node["next_node"] else None
+            self.append(Node(node["value"]))
+            id_head = node["next_node"] if node["next_node"] else None
 
-    def set_structure_driver(self, structure_driver):
-        data = self.save()
-        print(data)
-        structure_driver.write(data)
+    # def set_structure_driver(self, structure_driver):
+    #     data = self.save()
+    #     print(data)
+    #     structure_driver.write(data)
 
 
 
