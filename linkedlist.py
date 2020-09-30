@@ -1,5 +1,7 @@
 from typing import Any, Optional
 from node import Node
+# from Drivers import IStructureDriver
+import Drivers
 
 
 class LinkedList:
@@ -13,6 +15,8 @@ class LinkedList:
         """
         self.__head = self.__tail = None
         self.__len = 0
+
+        self.sd = None
 
     def __len__(self):
         """
@@ -95,6 +99,12 @@ class LinkedList:
         current_node = self.__head
         for _ in range(self.__len):
             yield current_node.value
+            current_node = current_node.next
+
+    def _node_iter(self):
+        current_node = self.__head
+        for _ in range(self.__len):
+            yield current_node
             current_node = current_node.next
 
     def __reversed__(self):
@@ -186,6 +196,41 @@ class LinkedList:
 
         self.__len -= 1
 
+    def save(self) -> None:
+        """
+        Transforms node list to dictionary with nodes for save in some file.
+        :return: dict
+        """
+        # if self.sd is None:
+
+        linked_list = {}
+        for node in self._node_iter():
+            linked_list[id(node)] = {
+                "value": node.value,
+                "next_node": id(node.next) if node.next else None,
+                "prev_node": id(node.prev) if node.prev else None   # для того чтобы можно было реализовать проход
+                                                                # с конца. Сейчас это не нужно, это памятка для меня.
+            }
+        self.sd.write({"head": id(self.__head), "nodes": linked_list, "tail": id(self.__tail)})
+
+    def load(self):     # , new_nodes: dict):
+        """
+        Load data from some source and create new linked list.
+        # :param new_nodes: dictionary with nodes
+        :return: None
+        """
+        self.clear()
+        new_nodes = self.sd.read()
+        id_head = new_nodes["head"]
+
+        for _ in range(len(new_nodes["nodes"])):
+            node = new_nodes["nodes"].pop(str(id_head))
+            self.append(Node(node["value"]))
+            id_head = node["next_node"] if node["next_node"] else None
+
+    def set_structure_driver(self, structure_driver):
+        self.sd = structure_driver
+
 
 if __name__ == '__main__':
     l1 = LinkedList()
@@ -196,33 +241,63 @@ if __name__ == '__main__':
     l1.insert(9, 5)
     l1.insert(0, 0)
     l1.insert(1, 99)
-    print(dir(l1))
+    # print(dir(l1))
+    # # print(l1)
+    # a = iter(l1)
+
+    # print(l1)
+
+    # l1.save()
+    # print(d1)
+    # print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    # l1.clear()
+    # l1.load(d1)
+    # print(l1)
+
+    driver_name = input("Please enter driver name > ")
+    builder = Drivers.SDFabric().get_sd_driver(driver_name)
+    sd = builder.build()
+
+    l1.set_structure_driver(sd)
+    # l1.save()
+    l1.load()
     print(l1)
-    a = iter(l1)
+    # obj = {
+    #     "a": [
+    #         {
+    #             "a": 1,
+    #             "b": True,
+    #             "c": "some string"
+    #         },
+    #         {
+    #             "afff": None,
+    #             "caaa": "some string 2"
+    #         }
+    #     ],
+    #     "value": (1, 2, 3)
+    # }
+    # sd.write(obj)
 
     # for _ in range(len(l1)):
     #     print(next(a))
     # print('')
 
-    print('!!!!!!')
-    print(l1.find(Node(99)))
-    print(l1.find(Node(0)))
-    print(l1.find(Node(5)))
-    print(l1.find(Node(6)))
-
-    print(l1, f'len = {len(l1)}')
-    l1.remove(Node(4))
-    print(l1, f'len = {len(l1)}')
-    l1.remove(Node(3))
-    print(l1, f'len = {len(l1)}')
+    # print('!!!!!!')
+    # print(l1.find(Node(99)))
+    # print(l1.find(Node(0)))
+    # print(l1.find(Node(5)))
+    # print(l1.find(Node(6)))
+    #
+    # print(l1, f'len = {len(l1)}')
+    # l1.remove(Node(4))
+    # print(l1, f'len = {len(l1)}')
+    # l1.remove(Node(3))
+    # print(l1, f'len = {len(l1)}')
 
     # l1.clear()
     # print(len(l1))
     # l1.delete(6)
     # print(l1)
-
-
-
 
     # print(reversed(next(l1)))
 
