@@ -16,6 +16,8 @@ class LinkedList:
         self.__head = self.__tail = None
         self.__len = 0
 
+        self.sd = None
+
     def __len__(self):
         """
         Redetermine command len
@@ -194,19 +196,22 @@ class LinkedList:
 
         self.__len -= 1
 
-    def save(self) -> dict:
+    def save(self) -> None:
         """
         Transforms node list to dictionary with nodes for save in some file.
         :return: dict
         """
+        # if self.sd is None:
+
         linked_list = {}
         for node in self._node_iter():
             linked_list[id(node)] = {
                 "value": node.value,
                 "next_node": id(node.next) if node.next else None,
-                "prev_node": id(node.prev) if node.prev else None
+                "prev_node": id(node.prev) if node.prev else None   # для того чтобы можно было реализовать проход
+                                                                # с конца. Сейчас это не нужно, это памятка ддля меня.
             }
-        return {"head": id(self.__head), "nodes": linked_list, "tail": id(self.__tail)}
+        self.sd.write({"head": id(self.__head), "nodes": linked_list, "tail": id(self.__tail)})
 
     def load(self, new_nodes: dict):
         """
@@ -222,10 +227,8 @@ class LinkedList:
             self.append(Node(node["value"]))
             id_head = node["next_node"] if node["next_node"] else None
 
-    # def set_structure_driver(self, structure_driver):
-    #     data = self.save()
-    #     print(data)
-    #     structure_driver.write(data)
+    def set_structure_driver(self, structure_driver):
+        self.sd = structure_driver
 
 
 
@@ -238,23 +241,25 @@ if __name__ == '__main__':
     l1.insert(9, 5)
     l1.insert(0, 0)
     l1.insert(1, 99)
-    print(dir(l1))
-    # print(l1)
-    a = iter(l1)
+    # print(dir(l1))
+    # # print(l1)
+    # a = iter(l1)
 
-    print(l1)
-    d1 = l1.save()
-    print(d1)
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    l1.clear()
-    l1.load(d1)
-    print(l1)
+    # print(l1)
+
+    # l1.save()
+    # print(d1)
+    # print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    # l1.clear()
+    # l1.load(d1)
+    # print(l1)
 
     driver_name = input("Please enter driver name > ")
     builder = Drivers.SDFabric().get_sd_driver(driver_name)
     sd = builder.build()
 
     l1.set_structure_driver(sd)
+    l1.save()
 
     print(l1)
     # obj = {
