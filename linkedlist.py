@@ -209,27 +209,27 @@ class LinkedList:
                 "value": node.value,
                 "next_node": id(node.next) if node.next else None,
                 "prev_node": id(node.prev) if node.prev else None   # для того чтобы можно было реализовать проход
-                                                                # с конца. Сейчас это не нужно, это памятка ддля меня.
+                                                                # с конца. Сейчас это не нужно, это памятка для меня.
             }
         self.sd.write({"head": id(self.__head), "nodes": linked_list, "tail": id(self.__tail)})
 
-    def load(self, new_nodes: dict):
+    def load(self):     # , new_nodes: dict):
         """
         Load data from some source and create new linked list.
-        :param new_nodes: dictionary with nodes
+        # :param new_nodes: dictionary with nodes
         :return: None
         """
         self.clear()
+        new_nodes = self.sd.read()
         id_head = new_nodes["head"]
 
         for _ in range(len(new_nodes["nodes"])):
-            node = new_nodes["nodes"].pop(id_head)
+            node = new_nodes["nodes"].pop(str(id_head))
             self.append(Node(node["value"]))
             id_head = node["next_node"] if node["next_node"] else None
 
     def set_structure_driver(self, structure_driver):
         self.sd = structure_driver
-
 
 
 if __name__ == '__main__':
@@ -259,8 +259,8 @@ if __name__ == '__main__':
     sd = builder.build()
 
     l1.set_structure_driver(sd)
-    l1.save()
-
+    # l1.save()
+    l1.load()
     print(l1)
     # obj = {
     #     "a": [
@@ -277,8 +277,6 @@ if __name__ == '__main__':
     #     "value": (1, 2, 3)
     # }
     # sd.write(obj)
-
-
 
     # for _ in range(len(l1)):
     #     print(next(a))
