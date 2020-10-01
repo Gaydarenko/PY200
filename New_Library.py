@@ -15,8 +15,24 @@ class Library(tk.Frame):
         #                           compound=tk.TOP, image=self.add_img)
         # button_search.pack(side=tk.LEFT)
 
+        self.main_window_text()
         self.search_button()
         self.add_button()
+
+    def main_window_text(self) -> None:
+        """
+        Rendering text in a window and placing data entry fields.
+        :return: None
+        """
+        tk.Label(text='Название книги:').grid(row=0, column=0, padx=10, pady=10)
+        tk.Label(text='Автор:').grid(row=1, column=0, padx=10)
+        tk.Label(text='Жанр:').grid(row=2, column=0, padx=10, pady=10)
+        entry_title = tk.Entry(width=45)
+        entry_title.grid(row=0, column=1, sticky=tk.W)
+        entry_author = tk.Entry(width=45)
+        entry_author.grid(row=1, column=1, sticky=tk.W)
+        entry_genre = tk.Entry(width=45)
+        entry_genre.grid(row=2, column=1, sticky=tk.W)
 
     def search_button(self) -> None:
         """
@@ -34,7 +50,7 @@ class Library(tk.Frame):
         """
         button_add = tk.Button(window1, text='Добавить')
         button_add.bind('<Button-1>', self.open_dialog)     # need self.add_book_window
-        button_add.grid(row=4, column=2, sticky=tk.E, pady=10)
+        button_add.grid(row=4, column=1, sticky=tk.E, pady=10)
 
     def open_dialog(self, *args):
         Child()
