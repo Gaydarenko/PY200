@@ -1,19 +1,27 @@
 import tkinter as tk
 
 
-class Library(tk.Frame):
+class Main(tk.Frame):
     def __init__(self, win1):
         super().__init__(win1)
+        self.SIZE_X = 400
+        self.SIZE_Y = 150
+        self.w = window1.winfo_screenwidth()
+        self.h = window1.winfo_screenheight()
         self.main_window()
 
     def main_window(self):
         # tb = tk.Frame(bg="#d7d8e0", bd=5)
         # tb.pack(side=tk.TOP, fill=tk.X)
 
-        self.add_img = tk.PhotoImage(file="old_library/3.png")
+        # self.add_img = tk.PhotoImage(file="old_library/3.png")
         # button_search = tk.Button(tb, text="Поиск", command=self.open_dialog, bg="#d7d8e0", bd=0,
         #                           compound=tk.TOP, image=self.add_img)
         # button_search.pack(side=tk.LEFT)
+
+        window1.title('Каталог библиотеки им.Гайдаренко Е.Г.')
+        window1.geometry(f'{self.SIZE_X}x{self.SIZE_Y}+{self.w // 2 - self.SIZE_X // 2}+{self.h // 2 - self.SIZE_Y // 2 - 100}')
+        window1.resizable(False, False)
 
         self.main_window_text()
         self.search_button()
@@ -53,32 +61,61 @@ class Library(tk.Frame):
         button_add.grid(row=4, column=1, sticky=tk.E, pady=10)
 
     def open_dialog(self, *args):
-        Child()
+        SearchResult()
 
 
-class Child(tk.Toplevel):
+class SearchResult(tk.Toplevel):
     def __init__(self):
-        super().__init__(window1)
-        self.init_child()
+        super().__init__()
+        self.SIZE_X = 400
+        self.SIZE_Y = 150
+        self.w = window1.winfo_screenwidth()
+        self.h = window1.winfo_screenheight()
+        self.search_window()
+        self.roster = []
 
-    def init_child(self):
-        self.title("Some text1")
-        self.geometry("400x200+400+300")
+    def search_window(self):
+        self.title("Результаты поиска")
+        self.geometry(f'{self.SIZE_X}x{self.SIZE_Y + 50}+{self.w // 2 - self.SIZE_X // 2}+{self.h // 2 - self.SIZE_Y // 2 - 100}')
         self.resizable(False, False)
+
+        self.scroll_left_button()
+        self.scroll_right_button()
 
         self.grab_set()     # Перехват всех событий
         self.focus_set()    # Удержание фокуса окна
 
+    def scroll_right_button(self) -> None:
+        """
+        Add button ">>" in lower right corner for open next search result.
+        :return: None
+        """
+        button_scroll_r = tk.Button(self, text='>>')
+        button_scroll_r.bind('<Button-1>', self.tmp)
+        button_scroll_r.grid(row=5, column=2, padx=20, pady=20)
+
+    def scroll_left_button(self) -> None:
+        """
+        Add button "<<" in lower right corner for open next search result
+        :return: None
+        """
+        button_scroll_l = tk.Button(self, text='<<')
+        button_scroll_l.bind('<Button-1>', self.tmp)
+        button_scroll_l.grid(row=5, column=0, pady=20)
+
+    def tmp(self):
+        pass
+
 
 if __name__ == "__main__":
     window1 = tk.Tk()
-    app = Library(window1)
+    app = Main(window1)
     # app.pack()
-    window1.title("My Library")
-    SIZE_X = 400
-    SIZE_Y = 150
-    w = window1.winfo_screenwidth()
-    h = window1.winfo_screenheight()
-    window1.geometry(f'{SIZE_X}x{SIZE_Y}+{w // 2 - SIZE_X // 2}+{h // 2 - SIZE_Y // 2 - 100}')
-    window1.resizable(False, False)
+    # window1.title('Каталог библиотеки им.Гайдаренко Е.Г.')
+    # SIZE_X = 400
+    # SIZE_Y = 150
+    # w = window1.winfo_screenwidth()
+    # h = window1.winfo_screenheight()
+    # window1.geometry(f'{SIZE_X}x{SIZE_Y}+{w // 2 - SIZE_X // 2}+{h // 2 - SIZE_Y // 2 - 100}')
+    # window1.resizable(False, False)
     window1.mainloop()
