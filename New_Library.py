@@ -4,9 +4,9 @@ import tkinter as tk
 class Library(tk.Frame):
     def __init__(self, win1):
         super().__init__(win1)
-        self.init_gui()
+        self.main_window()
 
-    def init_gui(self):
+    def main_window(self):
         # tb = tk.Frame(bg="#d7d8e0", bd=5)
         # tb.pack(side=tk.TOP, fill=tk.X)
 
