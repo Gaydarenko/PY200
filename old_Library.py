@@ -97,7 +97,7 @@ class OldLib:
         w = window2.winfo_screenwidth()
         h = window2.winfo_screenheight()
         window2.geometry(f'{SIZE_X}x{SIZE_Y + 50}+{w // 2 - SIZE_X // 2}+{h // 2 - SIZE_Y // 2}')
-        window2.grab_set()
+        # window2.grab_set()
         window2.focus_set()
 
         # Создание кнопок редактирования, удаления и переключения результатов
@@ -318,6 +318,7 @@ class OldLib:
         button_edit = tk.Button(window4, text='Сохранить')
         button_edit.bind('<Button-1>', lambda x: self.save_as(entry_title.get(), combobox.get()))
         button_edit.grid(row=10, column=1)
+        window4.focus_set()
         window4.mainloop()
 
     def save_as(self, filename: str, extension: str) -> None:
