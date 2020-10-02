@@ -85,9 +85,6 @@ class OldLib:
         :param genre: Строка с жанром книги
         :return: None
         """
-        if [title, author, genre] == ['', '', '']:
-            return None
-
         self.search(title, author, genre)     # словарь с результатами
         if not self.result_dict:
             return mb.showinfo('Упс!!!', 'Такой книги нет в базе')
