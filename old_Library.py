@@ -10,372 +10,330 @@
 """
 import tkinter as tk
 import tkinter.messagebox as mb
-import json
+import os.path
+import Drivers
+import linkedlist
+from node import Node
 
 SIZE_X = 400
 SIZE_Y = 150
 
-global num
 
+class OldLib:
+    def __init__(self):
+        self.num = 1
+        self.result_dict = {}
 
-def create_window():
-    """
-    Функция создаёт головное окно с полями ввода данных и кнопкой поиска в каталоге по введенным данным.
-    :return: None
-    """
-    # Создание головного окна по центру экрана.
-    window1 = tk.Tk()
-    window1.title('Каталог библиотеки им.Гайдаренко Е.Г.')
-    w = window1.winfo_screenwidth()  # Переменная создана для удобства чтения кода
-    h = window1.winfo_screenheight()  # Переменная создана для удобства чтения кода
-    window1.geometry(f'{SIZE_X}x{SIZE_Y}+{w // 2 - SIZE_X // 2}+{h // 2 - SIZE_Y // 2}')
-    window1.resizable(False, False)  # Запрет изменения размера окна
+    def create_window(self):
+        """
+        Функция создаёт головное окно с полями ввода данных и кнопкой поиска в каталоге по введенным данным.
+        :return: None
+        """
+        # Создание головного окна по центру экрана.
+        window1 = tk.Tk()
+        window1.title('Каталог библиотеки им.Гайдаренко Е.Г.')
+        w = window1.winfo_screenwidth()  # Переменная создана для удобства чтения кода
+        h = window1.winfo_screenheight()  # Переменная создана для удобства чтения кода
+        window1.geometry(f'{SIZE_X}x{SIZE_Y}+{w // 2 - SIZE_X // 2}+{h // 2 - SIZE_Y // 2}')
+        window1.resizable(False, False)  # Запрет изменения размера окна
 
-    # Отрисовка текста в окне и размещение полей ввода данных
-    tk.Label(text='Название книги:').grid(row=0, column=0, padx=10, pady=10)
-    tk.Label(text='Автор:').grid(row=1, column=0, padx=10)
-    tk.Label(text='Жанр:').grid(row=2, column=0, padx=10, pady=10)
-    entry_title = tk.Entry(width=45)
-    entry_title.grid(row=0, column=1, sticky=tk.W)
-    entry_author = tk.Entry(width=45)
-    entry_author.grid(row=1, column=1, sticky=tk.W)
-    entry_genre = tk.Entry(width=45)
-    entry_genre.grid(row=2, column=1, sticky=tk.W)
+        # Отрисовка текста в окне и размещение полей ввода данных
+        tk.Label(text='Название книги:').grid(row=0, column=0, padx=10, pady=10)
+        tk.Label(text='Автор:').grid(row=1, column=0, padx=10)
+        tk.Label(text='Жанр:').grid(row=2, column=0, padx=10, pady=10)
+        entry_title = tk.Entry(width=45)
+        entry_title.grid(row=0, column=1, sticky=tk.W)
+        entry_author = tk.Entry(width=45)
+        entry_author.grid(row=1, column=1, sticky=tk.W)
+        entry_genre = tk.Entry(width=45)
+        entry_genre.grid(row=2, column=1, sticky=tk.W)
 
-    # Создание кнопок поиска и добавления книги, а также привязка к ним функций
-    button_search = tk.Button(window1, text='Поиск')
-    button_search.bind('<Button-1>', lambda x: search_window(entry_title.get(), entry_author.get(), entry_genre.get()))
-    button_search.grid(row=4, column=1, sticky=tk.W, pady=10)
-    button_add = tk.Button(window1, text='Добавить')
-    button_add.bind('<Button-1>', lambda x: add_book(entry_title.get(), entry_author.get(), entry_genre.get()))
-    button_add.grid(row=4, column=1, sticky=tk.E, pady=10)
-    window1.mainloop()
+        # Создание кнопок поиска и добавления книги, а также привязка к ним функций
+        button_search = tk.Button(window1, text='Поиск')
+        button_search.bind('<Button-1>', lambda x: self.search_window(entry_title.get(), entry_author.get(), entry_genre.get()))
+        button_search.grid(row=4, column=1, sticky=tk.W, pady=10)
+        button_add = tk.Button(window1, text='Добавить')
+        button_add.bind('<Button-1>', lambda x: self.add_book(entry_title.get(), entry_author.get(), entry_genre.get()))
+        button_add.grid(row=4, column=1, sticky=tk.E, pady=10)
+        window1.mainloop()
 
+    def search(self, title: str, author: str, genre: str) -> None:
+        """
+        Функция выполняет поиск в каталоге (linkedlist) по переданным данным.
+        :param title: Строка с названием книги
+        :param author: Строка с фамилией (возможно с инициалами) автора книги
+        :param genre: Строка с жанром книги
+        :return: None
+        """
+        number = 0
+        self.result_dict = {}
+        for node_val in self.l_from_file:
+            if not title or title == node_val["title"]:
+                if not author or author == node_val["author"]:
+                    if not genre or genre == node_val["genre"]:
+                        number += 1
+                        self.result_dict[number] = {"title": node_val["title"],
+                                                    "author": node_val["author"],
+                                                    "genre": node_val["genre"]}
 
-def search(title: str, author: str, genre: str):
-    """
-    Функция выполняет поиск в каталоге по переданным данным.
-    :param title: Строка с названием книги
-    :param author: Строка с фамилией (возможно с инициалами) автора книги
-    :param genre: Строка с годом выпуска книги
-    :return roster: Список книг (с данными), удовлетворяющих параметрам поиска либо None
-    """
+    def search_window(self, title: str, author: str, genre: str) -> None:
+        """
+        Функция создаёт окно, которое появляется ровно над головным, тем самым скрывая его.
+        И выдает информацию по текущей книге. Переключение между книгами осуществляется с помощью кнопок.
+        :param title: Строка с названием книги
+        :param author: Строка с фамилией (возможно с инициалами) автора книги
+        :param genre: Строка с жанром книги
+        :return: None
+        """
+        if [title, author, genre] == ['', '', '']:
+            return None
 
-    roster = []
+        self.search(title, author, genre)     # словарь с результатами
+        if not self.result_dict:
+            return mb.showinfo('Упс!!!', 'Такой книги нет в базе')
+        self.len_res = len(self.result_dict)
 
-    with open('catalog.lib', 'r', encoding='utf-8') as file:
-        lines = file.readlines()
+        # Создание нового окна поверх всех окон
+        window2 = tk.Tk()
+        window2.title(f'Найдено книг: {self.len_res}')
+        w = window2.winfo_screenwidth()
+        h = window2.winfo_screenheight()
+        window2.geometry(f'{SIZE_X}x{SIZE_Y + 50}+{w // 2 - SIZE_X // 2}+{h // 2 - SIZE_Y // 2}')
+        window2.grab_set()
+        window2.focus_set()
 
-    for line in lines:
-        line = list(map(lambda x: x.capitalize(), json.loads(line)))
-        target = list(map(lambda x: x.capitalize(), [title, author, genre]))
-        if title == '':
-            target[0] = line[0]
-        if author == '':
-            target[1] = line[1]
-        if genre == '':
-            target[2] = line[2]
+        # Создание кнопок редактирования, удаления и переключения результатов
+        button_edit = tk.Button(window2, text='Изменить')
+        # button_edit.bind('<Button-1>', lambda x: self.edit_window(self.current_book))
+        button_edit.bind('<Button-1>', self.edit_window)
+        button_edit.grid(row=5, column=1, sticky=tk.W, pady=20)
+        button_del = tk.Button(window2, text='Удалить')
+        # button_del.bind('<Button-1>', lambda x: self.del_book(self.current_book))
+        button_del.bind('<Button-1>', self.del_book)
+        button_del.grid(row=5, column=1, sticky=tk.E, pady=20)
+        button_scroll_r = tk.Button(window2, text='>>')
+        button_scroll_r.bind('<Button-1>', self.scroll_right)
+        button_scroll_r.grid(row=5, column=2, padx=20, pady=20)
+        button_scroll_l = tk.Button(window2, text='<<')
+        button_scroll_l.bind('<Button-1>', self.scroll_left)
+        button_scroll_l.grid(row=5, column=0, pady=20)
 
-        if line == target:
-            roster.append(line)
-    if not roster:
-        return None
-    return roster
+        # Отрисовка текста в окне
+        label_space = tk.Label(window2)
+        label_space.grid(row=0)
+        label_book_number = tk.Label(window2, text=f'Номер книги:')
+        label_book_number.grid(row=1, column=0, ipady=5)
+        label_title = tk.Label(window2, text='Название книги:')
+        label_title.grid(row=2, column=0, padx=5)
+        label_author = tk.Label(window2, text='Автор:')
+        label_author.grid(row=3, column=0, pady=5)
+        label_genre = tk.Label(window2, text='Жанр:')
+        label_genre.grid(row=4, column=0)
 
+        # Размещение полей для ответов
+        self.result_book_number = tk.Entry(window2, width=38)
+        self.result_book_number.grid(row=1, column=1)
+        self.result_title = tk.Entry(window2, width=38)
+        self.result_title.grid(row=2, column=1)
+        self.result_author = tk.Entry(window2, width=38)
+        self.result_author.grid(row=3, column=1)
+        self.result_genre = tk.Entry(window2, width=38)
+        self.result_genre.grid(row=4, column=1)
 
-def search_window(title: str, author: str, genre: str):
-    """
-    Функция создаёт окно, которое появляется ровно над головным, тем самым скрывая его.
-    :param title: Строка с названием книги
-    :param author: Строка с фамилией (возможно с инициалами) автора книги
-    :param genre: Строка с годом выпуска книги
-    :return: None
-    """
+        self.current_book = self.result_dict[self.num]
+        self.insert()
+        window2.mainloop()
 
-    def insert(book: list):
+    def insert(self) -> None:
         """
         Функция вставляет данные в поля окна результатов поиска
-        :param book: Список данных книги
         :return: None
         """
-        result_book_number.configure(state="normal")
-        result_book_number.delete(0, tk.END)
-        result_book_number.insert(0, f'{num + 1} из {len_res}')
-        result_book_number.configure(state="disabled")
-        result_title.configure(state="normal")
-        result_title.delete(0, tk.END)
-        result_title.insert(0, book[0])
-        result_title.configure(state="disabled")
-        result_author.configure(state="normal")
-        result_author.delete(0, tk.END)
-        result_author.insert(0, book[1])
-        result_author.configure(state="disabled")
-        result_genre.configure(state="normal")
-        result_genre.delete(0, tk.END)
-        result_genre.insert(0, book[2])
-        result_genre.configure(state="disabled")
+        self.result_book_number.configure(state="normal")
+        self.result_book_number.delete(0, tk.END)
+        self.result_book_number.insert(0, f'{self.num} из {len(self.result_dict)}')
+        self.result_book_number.configure(state="disabled")
+        self.result_title.configure(state="normal")
+        self.result_title.delete(0, tk.END)
+        self.result_title.insert(0, self.current_book["title"])
+        self.result_title.configure(state="disabled")
+        self.result_author.configure(state="normal")
+        self.result_author.delete(0, tk.END)
+        self.result_author.insert(0, self.current_book["author"])
+        self.result_author.configure(state="disabled")
+        self.result_genre.configure(state="normal")
+        self.result_genre.delete(0, tk.END)
+        self.result_genre.insert(0, self.current_book["genre"])
+        self.result_genre.configure(state="disabled")
 
-    def scroll_right():
-        """
-        Функция выполняющая вызов функции insert() с следующим значением резульата поиска
-        :return: None
-        """
-        global num
-        if num + 1 < len(results):
-            num += 1
-            insert(results[num])
-
-    def scroll_left():
+    def scroll_left(self, *args) -> None:
         """
         Функция выполняющая вызов функции insert() с предыдущим значением резульата поиска
         :return: None
         """
-        global num
-        if num - 1 >= 0:
-            num -= 1
-            insert(results[num])
+        if self.num > 1:
+            self.num -= 1
+            self.current_book = self.result_dict[self.num]
+            self.insert()
 
-    global num
-    num = 0
+    def scroll_right(self, *args) -> None:
+        """
+        Функция выполняющая вызов функции insert() со следующим значением резульата поиска
+        :return: None
+        """
+        if self.num <= len(self.result_dict) - 1:
+            self.num += 1
+            self.current_book = self.result_dict[self.num]
+            self.insert()
 
-    if [title, author, genre] == ['', '', '']:
-        return None
+    def edit_window(self, *args) -> None:
+        """
+        Функция создает окно редактирования книги и заполняет поля ввода по умолчанию.
+        :return: None
+        """
+        # Создание нового окна поверх всех окон
+        window3 = tk.Tk()
+        window3.title(f'Редактирование книги {self.current_book["title"]}')
+        w = window3.winfo_screenwidth()
+        h = window3.winfo_screenheight()
+        window3.geometry(f'{SIZE_X}x{SIZE_Y + 150}+{w // 2 - SIZE_X // 2}+{h // 2 - SIZE_Y // 2}')
+        window3.focus_set()
 
-    results = search(title, author, genre)
-    if not results:
-        return mb.showinfo('Упс!!!', 'Такой книги нет в базе')
-    len_res = len(results)
+        # Отрисовка текста в окне
+        tk.Label(window3, text='Если поле будет не заполнено, то будут пустые строки').grid(row=0, column=0,
+                                                                                            columnspan=2, pady=10)
+        tk.Label(window3, text='Название книги:', font=10).grid(row=1, column=0)
+        tk.Label(window3, text='Сейчас:').grid(row=2, column=0, sticky=tk.E)
+        tk.Label(window3, text='Новое:').grid(row=3, column=0, sticky=tk.E)
+        tk.Label(window3, text='Автор:', font=10).grid(row=4, column=0)
+        tk.Label(window3, text='Сейчас:').grid(row=5, column=0, sticky=tk.E)
+        tk.Label(window3, text=f'{self.current_book["author"]}').grid(row=5, column=1, sticky=tk.W)
+        tk.Label(window3, text='Новое:').grid(row=6, column=0, sticky=tk.E)
+        tk.Label(window3, text='Жанр:', font=10).grid(row=7, column=0)
+        tk.Label(window3, text='Сейчас:').grid(row=8, column=0, sticky=tk.E)
+        tk.Label(window3, text=f'{self.current_book["genre"]}').grid(row=8, column=1, sticky=tk.W)
+        tk.Label(window3, text='Новое:').grid(row=9, column=0, sticky=tk.E)
 
-    # Создание нового окна поверх всех окон
-    window2 = tk.Tk()
-    window2.title(f'Найдено книг: {len_res}')
-    w = window2.winfo_screenwidth()
-    h = window2.winfo_screenheight()
-    window2.geometry(f'{SIZE_X}x{SIZE_Y + 50}+{w // 2 - SIZE_X // 2}+{h // 2 - SIZE_Y // 2}')
-    window2.grab_set()
-    window2.focus_set()
+        # Размещение полей ввода данных напротив отрисованного ранее текста
+        entry_title_old = tk.Entry(window3, width=40)
+        entry_title_old.grid(row=2, column=1)
+        entry_title_old.insert(0, f'{self.current_book["title"]}')
+        entry_title_old.configure(state="disabled")
+        entry_title_new = tk.Entry(window3, width=40)
+        entry_title_new.grid(row=3, column=1)
+        entry_title_new.insert(0, f'{self.current_book["title"]}')
+        entry_author_old = tk.Entry(window3, width=40)
+        entry_author_old.grid(row=5, column=1)
+        entry_author_old.insert(0, f'{self.current_book["author"]}')
+        entry_author_old.configure(state="disabled")
+        entry_author_new = tk.Entry(window3, width=40)
+        entry_author_new.grid(row=6, column=1)
+        entry_author_new.insert(0, f'{self.current_book["author"]}')
+        entry_genre_old = tk.Entry(window3, width=40)
+        entry_genre_old.grid(row=8, column=1)
+        entry_genre_old.insert(0, f'{self.current_book["genre"]}')
+        entry_genre_old.configure(state="disabled")
+        entry_genre_new = tk.Entry(window3, width=40)
+        entry_genre_new.grid(row=9, column=1)
+        entry_genre_new.insert(0, f'{self.current_book["genre"]}')
 
-    # Создание кнопок редактирования, удаления и переключения результатов
-    button_edit = tk.Button(window2, text='Изменить')
-    button_edit.bind('<Button-1>', lambda x: edit_window(results[num][0], results[num][1], results[num][2]))
-    button_edit.grid(row=5, column=1, sticky=tk.W, pady=20)
-    button_del = tk.Button(window2, text='Удалить')
-    button_del.bind('<Button-1>', lambda x: del_book(results[num][0], results[num][1], results[num][2]))
-    button_del.grid(row=5, column=1, sticky=tk.E, pady=20)
-    button_scroll_r = tk.Button(window2, text='>>')
-    button_scroll_r.bind('<Button-1>', lambda x: scroll_right())
-    button_scroll_r.grid(row=5, column=2, padx=20, pady=20)
-    button_scroll_l = tk.Button(window2, text='<<')
-    button_scroll_l.bind('<Button-1>', lambda x: scroll_left())
-    button_scroll_l.grid(row=5, column=0, pady=20)
+        # Создание кнопок редактирования, удаления и переключения результатов
+        button_edit = tk.Button(window3, text='Применить изменения')
+        button_edit.bind('<Button-1>', lambda x: self.edit_book(entry_title_new.get(), entry_author_new.get(), entry_genre_new.get()))
+        button_edit.grid(row=10, column=1)
+        window3.mainloop()
 
-    # Отрисовка текста в окне
-    label_space = tk.Label(window2)
-    label_space.grid(row=0)
-    label_book_number = tk.Label(window2, text=f'Номер книги:')
-    label_book_number.grid(row=1, column=0, ipady=5)
-    label_title = tk.Label(window2, text='Название книги:')
-    label_title.grid(row=2, column=0, padx=5)
-    label_author = tk.Label(window2, text='Автор:')
-    label_author.grid(row=3, column=0, pady=5)
-    label_genre = tk.Label(window2, text='Жанр:')
-    label_genre.grid(row=4, column=0)
+    def add_book(self, title: str, author: str, genre: str) -> None:
+        """
+        Добавление новой книги в каталог.
+        Достаточно указать только наименование (например, утеряна обложка и неизвестен автор)
+        :param title: Строка с названием книги
+        :param author: Строка с фамилией (возможно с инициалами) автора книги
+        :param genre: Строка с жанром книги
+        :return None
+        """
+        self.l_from_file.append({"title": title, "author": author, "genre": genre})
+        self.l_from_file.save()
+        if self.flag:
+            mb.showinfo(f"Книга добавлена в базу.", f"Название книги: {title}\nАвтор: {author}\nЖанр: {genre}")
+        self.flag = True
 
-    # Размещение полей для ответов
-    result_book_number = tk.Entry(window2, width=38)
-    result_book_number.grid(row=1, column=1)
-    result_book_number.insert(0, f'{num + 1} из {len_res}')
-    result_book_number.configure(state="disabled")
-    result_title = tk.Entry(window2, width=38)
-    result_title.grid(row=2, column=1)
-    result_title.insert(0, results[num][0])
-    result_title.configure(state="disabled")
-    result_author = tk.Entry(window2, width=38)
-    result_author.grid(row=3, column=1)
-    result_author.insert(0, results[num][1])
-    result_author.configure(state="disabled")
-    result_genre = tk.Entry(window2, width=38)
-    result_genre.grid(row=4, column=1)
-    result_genre.insert(0, results[num][2])
-    result_genre.configure(state="disabled")
+    def del_book(self, *args) -> None:
+        """
+        Функция производит удаление книги путем выгрузки в память содержимого файла и перезаписи этого файла.
+        :return: None
+        """
+        try:
+            self.l_from_file.remove(Node(self.current_book))
+            self.l_from_file.save()
+            self.result_dict.pop(self.num)
+            self.len_res = len(self.result_dict)
+            if self.flag:
+                mb.showinfo('Готово!', 'Книга удалена.')
+            self.flag = True
+        except ValueError:
+            mb.showinfo('Упс!!!', 'Некоретные данные.')
+        except Exception:
+            mb.showinfo('Упс!!!', 'Что-то пошло не так.')
 
-    window2.mainloop()
+    def edit_book(self, new_title: str, new_author: str, new_genre: str) -> None:
+        """
+        Функция производит редактирование инфоормации о книге.
+        :param new_title: Строка с исправленным названием книги
+        :param new_author: Строка с исправленной фамилией (возможно с инициалами) автора книги
+        :param new_genre: Строка с исправленным жанром книги
+        :return: None
+        """
+        self.flag = None
+        self.del_book()
+        self.flag = None
+        self.add_book(new_title, new_author, new_genre)
+        mb.showinfo('Готово!', 'Книга изменена.')
 
+    def choose_library(self) -> None:
+        """
+        Выбор каталога с книгами. Исходя из расширения файла, автоматически выбирается драйвер.
+        :return: None
+        """
+        # создание окна
+        window0 = tk.Tk()
+        window0.title('Каталог библиотеки им.Гайдаренко Е.Г.')
+        w = window0.winfo_screenwidth()  # Переменная создана для удобства чтения кода
+        h = window0.winfo_screenheight()  # Переменная создана для удобства чтения кода
+        window0.geometry(f'{SIZE_X}x{SIZE_Y}+{w // 2 - SIZE_X // 2}+{h // 2 - SIZE_Y // 2}')
+        window0.resizable(False, False)
 
-def edit_window(title, author, genre):
-    """
-    Функция создает окно редактирования книги и заполняет поля ввода по умолчанию (для удобства).
-    :param title: Строка с названием книги
-    :param author: Строка с фамилией (возможно с инициалами) автора книги
-    :param genre: Строка с годом выпуска книги
-    :return: None
-    """
+        # расположение текста
+        tk.Label(text=f"Какую библиотеку Вы бы хотели открыть?\n"
+                      f"Укажите название файла с расширением.").grid(row=0, column=0, padx=10, pady=10)
+        entry_title = tk.Entry(width=21)
+        entry_title.grid(row=0, column=1, sticky=tk.W)
 
-    # Создание нового окна поверх всех окон
-    window3 = tk.Tk()
-    window3.title(f'Редактирование книги {title}')
-    w = window3.winfo_screenwidth()
-    h = window3.winfo_screenheight()
-    window3.geometry(f'{SIZE_X}x{SIZE_Y + 150}+{w // 2 - SIZE_X // 2}+{h // 2 - SIZE_Y // 2}')
-    window3.grab_set()
-    window3.focus_set()
+        # создание кнопки
+        button_search = tk.Button(window0, text='Поиск')
+        button_search.bind('<Button-1>', lambda x: self.finish(entry_title.get(), window0))
+        button_search.grid(row=4, column=1, sticky=tk.W, pady=10)
 
-    # Отрисовка текста в окне
-    tk.Label(window3, text='Если поле будет не заполнено, то будут пустые строки').grid(row=0, column=0,
-                                                                                        columnspan=2, pady=10)
-    tk.Label(window3, text='Название книги:', font=10).grid(row=1, column=0)
-    tk.Label(window3, text='Сейчас:').grid(row=2, column=0, sticky=tk.E)
-    tk.Label(window3, text='Новое:').grid(row=3, column=0, sticky=tk.E)
-    tk.Label(window3, text='Автор:', font=10).grid(row=4, column=0)
-    tk.Label(window3, text='Сейчас:').grid(row=5, column=0, sticky=tk.E)
-    tk.Label(window3, text=f'{author}').grid(row=5, column=1, sticky=tk.W)
-    tk.Label(window3, text='Новое:').grid(row=6, column=0, sticky=tk.E)
-    tk.Label(window3, text='Жанр:', font=10).grid(row=7, column=0)
-    tk.Label(window3, text='Сейчас:').grid(row=8, column=0, sticky=tk.E)
-    tk.Label(window3, text=f'{genre}').grid(row=8, column=1, sticky=tk.W)
-    tk.Label(window3, text='Новое:').grid(row=9, column=0, sticky=tk.E)
+        window0.mainloop()
 
-    # Размещение полей ввода данных напротив отрисованного ранее текста
-    entry_title_old = tk.Entry(window3, width=40)
-    entry_title_old.grid(row=2, column=1)
-    entry_title_old.insert(0, f'{title}')
-    entry_title_old.configure(state="disabled")
-    entry_title_new = tk.Entry(window3, width=40)
-    entry_title_new.grid(row=3, column=1)
-    entry_title_new.insert(0, f'{title}')
-    entry_author_old = tk.Entry(window3, width=40)
-    entry_author_old.grid(row=5, column=1)
-    entry_author_old.insert(0, f'{author}')
-    entry_author_old.configure(state="disabled")
-    entry_author_new = tk.Entry(window3, width=40)
-    entry_author_new.grid(row=6, column=1)
-    entry_author_new.insert(0, f'{author}')
-    entry_genre_old = tk.Entry(window3, width=40)
-    entry_genre_old.grid(row=8, column=1)
-    entry_genre_old.insert(0, f'{genre}')
-    entry_genre_old.configure(state="disabled")
-    entry_genre_new = tk.Entry(window3, width=40)
-    entry_genre_new.grid(row=9, column=1)
-    entry_genre_new.insert(0, f'{genre}')
-
-    # Создание кнопок редактирования, удаления и переключения результатов
-    button_edit = tk.Button(window3, text='Применить изменения')
-    button_edit.bind('<Button-1>', lambda x: edit_book(title, author, genre, entry_title_new.get(),
-                                                       entry_author_new.get(), entry_genre_new.get()))
-    button_edit.grid(row=10, column=1)
-    window3.mainloop()
-
-
-def add_book(title: str, author: str, genre: str):
-    """
-    Добавление новой книги в каталог.
-    Достаточно указать только наименование (например, утеряна обложка и неизвестен автор)
-    :param title: Строка с названием книги
-    :param author: Строка с фамилией (возможно с инициалами) автора книги
-    :param genre: Строка с годом выпуска книги
-    :return None
-    """
-    target = list(map(lambda x: x.capitalize(), [title, author, genre]))
-    if len(title):
-        with open('catalog.lib', 'r', encoding='utf-8') as file:
-            for line in file.readlines():
-                line = list(map(lambda x: x.capitalize(), json.loads(line)))
-                if line == target:
-                    return mb.showinfo('Упс!!!', 'Такая книга уже существует')
-        with open('catalog.lib', 'a', encoding='utf-8') as file:
-            json.dump(target, file, ensure_ascii=False)
-            file.write(f'\n')
-        mb.showinfo(f"Книга добавлена в базу.", f"Название книги: {target[0]}\nАвтор: {target[1]}\nЖанр: {target[2]}")
-
-
-def del_book(title: str, author: str, genre: str):
-    """
-    Функция производит удаление книги путем выгрузки в память содержимого файла и перезаписи этого файла.
-    Также производится подсчет количества удаленных книг.
-    :param title: Строка с названием книги
-    :param author: Строка с фамилией (возможно с инициалами) автора книги
-    :param genre: Строка с годом выпуска книги
-    :return: None
-    """
-    count = 0
-    if len(title):
-        with open('catalog.lib', 'r', encoding='utf-8') as file:
-            lines = file.readlines()
-
-        file = open('catalog.lib', 'w')  # очиска файла
-        file.close  # очиска файла
-
-        with open('catalog.lib', 'a', encoding='utf-8') as file:
-            for line in lines:
-                line = list(map(lambda x: x.capitalize(), json.loads(line)))
-                if line != [title, author, genre]:
-                    json.dump(line, file, ensure_ascii=False)
-                    file.write(f'\n')
-                else:
-                    count = 1
-    if count:
-        mb.showinfo('Готово!', 'Книга удалена.')
-    else:
-        mb.showinfo('Упс!!!', 'Что-то пошло не так')
-
-
-def edit_book(title: str, author: str, genre: str, new_title: str, new_author: str, new_genre: str):
-    """
-    Функция производит редактирование инфоормации о книге.
-    :param title: Строка с неисправленным названием книги
-    :param author: Строка с неисправленной фамилией (возможно с инициалами) автора книги
-    :param genre: Строка с неисправленным годом выпуска книги
-    :param new_title: Строка с исправленным названием книги
-    :param new_author: Строка с исправленной фамилией (возможно с инициалами) автора книги
-    :param new_genre: Строка с исправленным годом выпуска книги
-    :return: None
-    """
-    count = 0
-    if len(new_title):
-        with open('catalog.lib', 'r', encoding='utf-8') as file:
-            lines = file.readlines()
-
-        file = open('catalog.lib', 'w')  # очиска файла
-        file.close  # очиска файла
-
-        target = list(map(lambda x: x.capitalize(), [new_title, new_author, new_genre]))
-        with open('catalog.lib', 'a', encoding='utf-8') as file:
-            for line in lines:
-                line = list(map(lambda x: x.capitalize(), json.loads(line)))
-                if line == [title, author, genre]:
-                    json.dump(target, file, ensure_ascii=False)
-                    file.write(f'\n')
-                elif line == target:
-                    count += 1
-                    continue
-                else:
-                    json.dump(line, file, ensure_ascii=False)
-                    file.write(f'\n')
-        if count:
-            mb.showinfo('Готово!', f'Такая книга уже существует.\nЗаписи были объединены.')
-        else:
-            mb.showinfo('Готово!', 'Изменения данных о книге успешно применены.')
-    else:
-        mb.showinfo('Внимание', 'Необходимо указать название книги!')
+    def finish(self, filename: str, window0) -> None:
+        """
+        Automatically detects driver based on file extension.
+        :param filename: filename with extension
+        :return: None
+        """
+        base_drivers = {'json': 'JSONFileDriver', 'pickle': "PICKLEFileDriver"}
+        if os.path.isfile(filename):
+            driver_name = base_drivers[filename.split('.')[1]]
+            builder = Drivers.SDFabric().get_sd_driver(driver_name)
+            sd = builder.build(filename)
+            self.l_from_file = linkedlist.LinkedList()
+            self.l_from_file.set_structure_driver(sd)
+            self.l_from_file.load()  # закачка линкедлиста из файла
+            window0.destroy()
+            self.create_window()
 
 
 if __name__ == '__main__':
-    # a = [["Унесенные ветром", "Евген у.К.", "наука"],
-    #      ["Физика", "Евген", "наука"],
-    #      ["Алгебра", "Евген", "наука"],
-    #      ["Химия", "Евген", "наука"],
-    #      ["Ботаника", "Елена", "наука"],
-    #      ["Физ-ра", "Евген", "спорт"],
-    #      ["1", "2", "3"]]
-
-    # Проверка функции добавления книг
-    # for i in a:
-    #     title = i[0]
-    #     author = i[1]
-    #     genre = i[2]
-    #     add_book(title, author, genre)
-
-    # Проверка функции удаления книг
-    # del_book("Химия", "Евген", "наука")
-
-    create_window()
+    t1 = OldLib()
+    t1.choose_library()

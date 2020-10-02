@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from typing import Dict
 import json
 import pickle
-from linkedlist import LinkedList
 
 
 class IStructureDriver(ABC):
@@ -61,15 +60,17 @@ class SDBuilder:
 
 
 class JSONFileBuilder(SDBuilder):
-    def build(self):
-        file_name = input("Enter filename without extension > ")
-        return JSONFileDriver(file_name + ".json")
+    def build(self, filename=None):
+        if not filename:
+            filename = input("Enter filename without extension > ") + ".json"
+        return JSONFileDriver(filename)
 
 
 class PICKLEFileBuilder(SDBuilder):
-    def build(self):
-        file_name = input("Enter filename without extension > ")
-        return PICKLEFileDriver(file_name + ".pickle")
+    def build(self, filename=None):
+        if not filename:
+            filename = input("Enter filename without extension > ") + ".pickle"
+        return PICKLEFileDriver(filename)
 
 
 class JSONStringBuilder(SDBuilder):
@@ -123,4 +124,4 @@ if __name__ == "__main__":
     driver_name = input("Please enter driver name > ")
     builder = SDFabric().get_sd_driver(driver_name)
     sd = builder.build()
-    l1 = LinkedList()
+    # l1 = LinkedList()
