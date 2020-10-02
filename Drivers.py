@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict
 import json
 import pickle
+import csv
 
 
 class IStructureDriver(ABC):
@@ -40,7 +41,30 @@ class PICKLEFileDriver(IStructureDriver):
             pickle.dump(value, file)
 
 
+class CSVFileDriver(IStructureDriver):
+    def __init__(self, filename: str):
+        self.filename = filename
+
+    def read(self) -> Dict:
+        result = {}
+        with open(self.filename, 'r', newline="") as file:
+            reader = csv.reader(file)
+            for row in reader:
+                result[row[0]] = row[1]
+        nodes_val = str(result["nodes"])
+        nodes_val = nodes_val.replace("'", '"')
+        nodes_val = nodes_val.replace("None", "null")
+        result["nodes"] = json.loads(nodes_val)
+        return result
+
+    def write(self, value: Dict):
+        with open(self.filename, "w", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerows(value.items())
+
+
 class JSONStringDriver(IStructureDriver):
+
     def __init__(self, s: str = "{}"):
         self.string = s
 
@@ -73,6 +97,13 @@ class PICKLEFileBuilder(SDBuilder):
         return PICKLEFileDriver(filename)
 
 
+class CSVFileBuilder(SDBuilder):
+    def build(self, filename=None):
+        if not filename:
+            filename = input("Enter filename without extension > ") + "csv"
+        return CSVFileDriver(filename)
+
+
 class JSONStringBuilder(SDBuilder):
     def build(self):
         string = input("Enter dictionary as string ('{keys: items}') > ")
@@ -82,14 +113,15 @@ class JSONStringBuilder(SDBuilder):
 class SDFabric:
     @staticmethod
     def get_driver_base():
-        return {"json": "JSONFileDriver", "pickle": "PICKLEFileDriver"}
+        return {"json": "JSONFileDriver", "pickle": "PICKLEFileDriver", "csv": "CSVFileDriver"}
 
     @staticmethod
     def get_sd_driver(driver_name: str):
         builders = {
             "JSONFileDriver": JSONFileBuilder,
             "PICKLEFileDriver": PICKLEFileBuilder,
-            "JSONStringDriver": JSONStringBuilder
+            "JSONStringDriver": JSONStringBuilder,
+            "CSVFileDriver": CSVFileBuilder
         }
 
         driver = builders.get(driver_name)
