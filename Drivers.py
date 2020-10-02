@@ -81,6 +81,10 @@ class JSONStringBuilder(SDBuilder):
 
 class SDFabric:
     @staticmethod
+    def get_driver_base():
+        return {"json": "JSONFileDriver", "pickle": "PICKLEFileDriver"}
+
+    @staticmethod
     def get_sd_driver(driver_name: str):
         builders = {
             "JSONFileDriver": JSONFileBuilder,

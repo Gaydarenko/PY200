@@ -205,13 +205,13 @@ class LinkedList:
         """
         linked_list = {}
         for node in self._node_iter():
-            linked_list[id(node)] = {
+            linked_list[str(id(node))] = {
                 "value": node.value,
-                "next_node": id(node.next) if node.next else None,
-                "prev_node": id(node.prev) if node.prev else None   # для того чтобы можно было реализовать проход
+                "next_node": str(id(node.next)) if node.next else None,
+                "prev_node": str(id(node.prev)) if node.prev else None   # для того чтобы можно было реализовать проход
                                                                 # с конца. Сейчас это не нужно, это памятка для меня.
             }
-        self.sd.write({"head": id(self.__head), "nodes": linked_list, "tail": id(self.__tail)})
+        self.sd.write({"head": str(id(self.__head)), "nodes": linked_list, "tail": str(id(self.__tail))})
 
     def load(self):     # , new_nodes: dict):
         """

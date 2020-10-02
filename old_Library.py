@@ -10,6 +10,7 @@
 """
 import tkinter as tk
 import tkinter.messagebox as mb
+from tkinter import ttk
 import os.path
 import Drivers
 import linkedlist
@@ -108,6 +109,9 @@ class OldLib:
         # button_del.bind('<Button-1>', lambda x: self.del_book(self.current_book))
         button_del.bind('<Button-1>', self.del_book)
         button_del.grid(row=5, column=1, sticky=tk.E, pady=20)
+        button_save_as = tk.Button(window2, text='Сохранить как...')
+        button_save_as.bind('<Button-1>', self.save_as_window)
+        button_save_as.grid(row=5, column=1, sticky=tk.S, pady=20)
         button_scroll_r = tk.Button(window2, text='>>')
         button_scroll_r.bind('<Button-1>', self.scroll_right)
         button_scroll_r.grid(row=5, column=2, padx=20, pady=20)
@@ -287,6 +291,54 @@ class OldLib:
         self.add_book(new_title, new_author, new_genre)
         mb.showinfo('Готово!', 'Книга изменена.')
 
+    def save_as_window(self, *args) -> None:
+        """
+        Функция создает новое окно, в котором можно указать файл и выбрать расширение для файла,
+        в который нужно записать результаты поиска.
+        :return: None
+        """
+        window4 = tk.Tk()
+        window4.title(f'Сохранение каталога книг в новом файле')
+        w = window4.winfo_screenwidth()
+        h = window4.winfo_screenheight()
+        window4.geometry(f'{SIZE_X}x{SIZE_Y + 150}+{w // 2 - SIZE_X // 2}+{h // 2 - SIZE_Y // 2}')
+        window4.focus_set()
+
+        # list(self.base_drivers.keys())
+
+        # Отрисовка текста в окне и размещение полей ввода данных
+        tk.Label(window4, text='Имя файла').grid(row=0, column=0, padx=10, pady=10)
+        entry_title = tk.Entry(window4, width=35)
+        entry_title.grid(row=0, column=1, sticky=tk.W)
+        combobox = ttk.Combobox(window4, values=list(self.base_drivers.keys()), width=10)
+        combobox.current(0)
+        combobox.grid(row=0, column=3, padx=10, pady=10)
+
+        # Создание кнопки
+        button_edit = tk.Button(window4, text='Сохранить')
+        button_edit.bind('<Button-1>', lambda x: self.save_as(entry_title.get(), combobox.get()))
+        button_edit.grid(row=10, column=1)
+        window4.mainloop()
+
+    def save_as(self, filename: str, extension: str) -> None:
+        """
+        Функция сохраняет результаты поиска в файл с заданным именем и выбранным расширением
+        :param filename: имя файла
+        :param extension: расширение файла
+        :return:
+        """
+        driver_name = self.base_drivers[extension]
+        builder = Drivers.SDFabric().get_sd_driver(driver_name)
+        sd = builder.build(f"{filename}.{extension}")
+
+        l_for_save = linkedlist.LinkedList()
+        for i in range(1, len(self.result_dict) + 1):
+            l_for_save.append(self.result_dict[i])
+
+        l_for_save.set_structure_driver(sd)
+        l_for_save.save()
+        l_for_save.clear()
+
     def choose_library(self) -> None:
         """
         Выбор каталога с книгами. Исходя из расширения файла, автоматически выбирается драйвер.
@@ -319,9 +371,9 @@ class OldLib:
         :param filename: filename with extension
         :return: None
         """
-        base_drivers = {'json': 'JSONFileDriver', 'pickle': "PICKLEFileDriver"}
+        self.base_drivers = Drivers.SDFabric.get_driver_base()
         if os.path.isfile(filename):
-            driver_name = base_drivers[filename.split('.')[1]]
+            driver_name = self.base_drivers[filename.split('.')[1]]
             builder = Drivers.SDFabric().get_sd_driver(driver_name)
             sd = builder.build(filename)
             self.l_from_file = linkedlist.LinkedList()
