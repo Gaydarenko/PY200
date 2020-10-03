@@ -24,6 +24,7 @@ class OldLib:
     def __init__(self):
         self.num = 1
         self.result_dict = {}
+        self.len_res = 0
 
     def create_window(self):
         """
@@ -51,7 +52,8 @@ class OldLib:
 
         # Создание кнопок поиска и добавления книги, а также привязка к ним функций
         button_search = tk.Button(window1, text='Поиск')
-        button_search.bind('<Button-1>', lambda x: self.search_window(entry_title.get(), entry_author.get(), entry_genre.get()))
+        button_search.bind('<Button-1>',
+                           lambda x: self.search_window(entry_title.get(), entry_author.get(), entry_genre.get()))
         button_search.grid(row=4, column=1, sticky=tk.W, pady=10)
         button_add = tk.Button(window1, text='Добавить')
         button_add.bind('<Button-1>', lambda x: self.add_book(entry_title.get(), entry_author.get(), entry_genre.get()))
