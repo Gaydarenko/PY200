@@ -399,6 +399,6 @@ class OldLib:
             self.create_window()
 
 
-if __name__ == '__main__':
-    t1 = OldLib()
-    t1.choose_library()
+# if __name__ == '__main__':
+t1 = OldLib()
+t1.choose_library()
