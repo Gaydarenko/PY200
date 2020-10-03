@@ -31,6 +31,7 @@ class OldLib:
         self.result_author = None
         self.result_genre = None
         self.current_book = None
+        self.flag_edit = None
 
     def create_window(self):
         """
@@ -115,7 +116,7 @@ class OldLib:
         button_edit.bind('<Button-1>', self.edit_window)
         button_edit.grid(row=5, column=1, sticky=tk.W, pady=20)
         button_del = tk.Button(window2, text='Удалить')
-        button_del.bind('<Button-1>', lambda x: self.del_book())
+        button_del.bind('<Button-1>', self.del_book)
         button_del.grid(row=5, column=1, sticky=tk.E, pady=20)
         button_save_as = tk.Button(window2, text='Сохранить как...')
         button_save_as.bind('<Button-1>', self.save_as_window)
@@ -175,7 +176,7 @@ class OldLib:
         self.result_genre.insert(0, self.current_book["genre"])
         self.result_genre.configure(state="disabled")
 
-    def scroll_left(self, *args) -> None:
+    def scroll_left(self, _) -> None:
         """
         Функция выполняющая вызов функции insert() с предыдущим значением резульата поиска
         :return: None
@@ -185,7 +186,7 @@ class OldLib:
             self.current_book = self.result_dict[self.num]
             self.insert()
 
-    def scroll_right(self, *args) -> None:
+    def scroll_right(self, _) -> None:
         """
         Функция выполняющая вызов функции insert() со следующим значением резульата поиска
         :return: None
@@ -195,7 +196,7 @@ class OldLib:
             self.current_book = self.result_dict[self.num]
             self.insert()
 
-    def edit_window(self, *args) -> None:
+    def edit_window(self, _) -> None:
         """
         Функция создает окно редактирования книги и заполняет поля ввода по умолчанию.
         :return: None
@@ -264,11 +265,10 @@ class OldLib:
         """
         self.l_from_file.append({"title": title, "author": author, "genre": genre})
         self.l_from_file.save()
-        if self.flag:
+        if not self.flag_edit:
             mb.showinfo(f"Книга добавлена в базу.", f"Название книги: {title}\nАвтор: {author}\nЖанр: {genre}")
-        self.flag = True
 
-    def del_book(self) -> None:
+    def del_book(self, _) -> None:
         """
         Функция производит удаление книги путем выгрузки в память содержимого файла и перезаписи этого файла.
         :return: None
@@ -278,7 +278,8 @@ class OldLib:
         self.result_dict.pop(self.num)
         self.len_res = len(self.result_dict)
         self.restructure_result_dict()
-        mb.showinfo('Готово!', 'Книга удалена.')
+        if not self.flag_edit:
+            mb.showinfo('Готово!', 'Книга удалена.')
 
     def edit_book(self, new_title: str, new_author: str, new_genre: str) -> None:
         """
@@ -289,8 +290,10 @@ class OldLib:
         :return: None
         """
         if new_title:
-            self.del_book()
+            self.flag_edit = True
+            self.del_book(None)
             self.add_book(new_title, new_author, new_genre)
+            self.flag_edit = None
             mb.showinfo('Готово!', 'Книга изменена.')
         else:
             mb.showinfo("Ошибка", "Обязательно должно быть название книги!!!")
@@ -305,7 +308,7 @@ class OldLib:
         for i in range(len(roster)):
             self.result_dict[i+1] = roster[i][1]
 
-    def save_as_window(self, *args) -> None:
+    def save_as_window(self, _) -> None:
         """
         Функция создает новое окно, в котором можно указать файл и выбрать расширение для файла,
         в который нужно записать результаты поиска.
@@ -317,8 +320,6 @@ class OldLib:
         h = window4.winfo_screenheight()
         window4.geometry(f'{SIZE_X}x{SIZE_Y + 150}+{w // 2 - SIZE_X // 2}+{h // 2 - SIZE_Y // 2}')
         window4.focus_set()
-
-        # list(self.base_drivers.keys())
 
         # Отрисовка текста в окне и размещение полей ввода данных
         tk.Label(window4, text='Имя файла').grid(row=0, column=0, padx=10, pady=10)
