@@ -115,7 +115,7 @@ class OldLib:
         button_edit.bind('<Button-1>', self.edit_window)
         button_edit.grid(row=5, column=1, sticky=tk.W, pady=20)
         button_del = tk.Button(window2, text='Удалить')
-        button_del.bind('<Button-1>', self.del_book)
+        button_del.bind('<Button-1>', lambda x: self.del_book())
         button_del.grid(row=5, column=1, sticky=tk.E, pady=20)
         button_save_as = tk.Button(window2, text='Сохранить как...')
         button_save_as.bind('<Button-1>', self.save_as_window)
@@ -248,7 +248,8 @@ class OldLib:
 
         # Создание кнопок редактирования, удаления и переключения результатов
         button_edit = tk.Button(window3, text='Применить изменения')
-        button_edit.bind('<Button-1>', lambda x: self.edit_book(entry_title_new.get(), entry_author_new.get(), entry_genre_new.get()))
+        button_edit.bind('<Button-1>',
+                         lambda x: self.edit_book(entry_title_new.get(), entry_author_new.get(), entry_genre_new.get()))
         button_edit.grid(row=10, column=1)
         window3.mainloop()
 
@@ -267,23 +268,17 @@ class OldLib:
             mb.showinfo(f"Книга добавлена в базу.", f"Название книги: {title}\nАвтор: {author}\nЖанр: {genre}")
         self.flag = True
 
-    def del_book(self, *args) -> None:
+    def del_book(self) -> None:
         """
         Функция производит удаление книги путем выгрузки в память содержимого файла и перезаписи этого файла.
         :return: None
         """
-        try:
-            self.l_from_file.remove(Node(self.current_book))
-            self.l_from_file.save()
-            self.result_dict.pop(self.num)
-            self.len_res = len(self.result_dict)
-            if self.flag:
-                mb.showinfo('Готово!', 'Книга удалена.')
-            self.flag = True
-        except ValueError:
-            mb.showinfo('Упс!!!', 'Некоретные данные.')
-        except Exception:
-            mb.showinfo('Упс!!!', 'Что-то пошло не так.')
+        self.l_from_file.remove(Node(self.current_book))
+        self.l_from_file.save()
+        self.result_dict.pop(self.num)
+        self.len_res = len(self.result_dict)
+        self.restructure_result_dict()
+        mb.showinfo('Готово!', 'Книга удалена.')
 
     def edit_book(self, new_title: str, new_author: str, new_genre: str) -> None:
         """
@@ -293,11 +288,22 @@ class OldLib:
         :param new_genre: Строка с исправленным жанром книги
         :return: None
         """
-        self.flag = None
-        self.del_book()
-        self.flag = None
-        self.add_book(new_title, new_author, new_genre)
-        mb.showinfo('Готово!', 'Книга изменена.')
+        if new_title:
+            self.del_book()
+            self.add_book(new_title, new_author, new_genre)
+            mb.showinfo('Готово!', 'Книга изменена.')
+        else:
+            mb.showinfo("Ошибка", "Обязательно должно быть название книги!!!")
+
+    def restructure_result_dict(self) -> None:
+        """
+        Обновляет словарь с результатами после внесения изменений - обеспечивает непрерывный порядок ключей
+        :return: None
+        """
+        roster = sorted(self.result_dict.items())
+        self.result_dict = {}
+        for i in range(len(roster)):
+            self.result_dict[i+1] = roster[i][1]
 
     def save_as_window(self, *args) -> None:
         """
