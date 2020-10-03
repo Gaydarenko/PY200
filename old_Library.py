@@ -268,7 +268,7 @@ class OldLib:
         if not self.flag_edit:
             mb.showinfo(f"Книга добавлена в базу.", f"Название книги: {title}\nАвтор: {author}\nЖанр: {genre}")
 
-    def del_book(self, _) -> None:
+    def del_book(self, _=None) -> None:
         """
         Функция производит удаление книги путем выгрузки в память содержимого файла и перезаписи этого файла.
         :return: None
@@ -291,7 +291,7 @@ class OldLib:
         """
         if new_title:
             self.flag_edit = True
-            self.del_book(None)
+            self.del_book()
             self.add_book(new_title, new_author, new_genre)
             self.flag_edit = None
             mb.showinfo('Готово!', 'Книга изменена.')
