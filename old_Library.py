@@ -16,6 +16,7 @@ import Drivers
 import linkedlist
 from node import Node
 
+
 SIZE_X = 400
 SIZE_Y = 150
 
@@ -25,6 +26,11 @@ class OldLib:
         self.num = 1
         self.result_dict = {}
         self.len_res = 0
+        self.result_book_number = None
+        self.result_title = None
+        self.result_author = None
+        self.result_genre = None
+
 
     def create_window(self):
         """
