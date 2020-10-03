@@ -30,7 +30,7 @@ class OldLib:
         self.result_title = None
         self.result_author = None
         self.result_genre = None
-
+        self.current_book = None
 
     def create_window(self):
         """
@@ -76,6 +76,7 @@ class OldLib:
         """
         number = 0
         self.result_dict = {}
+        self.num = 1
         for node_val in self.l_from_file:
             if not title or title == node_val["title"]:
                 if not author or author == node_val["author"]:
@@ -98,6 +99,7 @@ class OldLib:
         if not self.result_dict:
             return mb.showinfo('Упс!!!', 'Такой книги нет в базе')
         self.len_res = len(self.result_dict)
+        # self.num = 1
 
         # Создание нового окна поверх всех окон
         window2 = tk.Tk()
@@ -110,11 +112,9 @@ class OldLib:
 
         # Создание кнопок редактирования, удаления и переключения результатов
         button_edit = tk.Button(window2, text='Изменить')
-        # button_edit.bind('<Button-1>', lambda x: self.edit_window(self.current_book))
         button_edit.bind('<Button-1>', self.edit_window)
         button_edit.grid(row=5, column=1, sticky=tk.W, pady=20)
         button_del = tk.Button(window2, text='Удалить')
-        # button_del.bind('<Button-1>', lambda x: self.del_book(self.current_book))
         button_del.bind('<Button-1>', self.del_book)
         button_del.grid(row=5, column=1, sticky=tk.E, pady=20)
         button_save_as = tk.Button(window2, text='Сохранить как...')
