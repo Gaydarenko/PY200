@@ -1,6 +1,5 @@
 from typing import Any, Optional
 from node import Node
-# from Drivers import IStructureDriver
 import Drivers
 
 
@@ -15,8 +14,7 @@ class LinkedList:
         """
         self.__head = self.__tail = None
         self.__len = 0
-
-        self.sd = None
+        # self.sd = None
 
     def __len__(self):
         """
@@ -91,13 +89,15 @@ class LinkedList:
             self.__tail = append_node
         self.__len += 1
 
-    def __iter__(self):
+    def __iter__(self, current_node=None):
         """
         Redetermine iterator
         :return: next node
         """
-        current_node = self.__head
-        for _ in range(self.__len):
+        if not current_node:
+            current_node = self.__head
+
+        while current_node:
             yield current_node.value
             current_node = current_node.next
 
@@ -107,13 +107,15 @@ class LinkedList:
             yield current_node
             current_node = current_node.next
 
-    def __reversed__(self):
+    def __reversed__(self, current_node=None):
         """
         Redetermine reversed iterator
         :return: previous node
         """
-        current_node = self.__tail
-        for _ in range(self.__len):
+        if not current_node:
+            current_node = self.__tail
+
+        while current_node:
             yield current_node.value
             current_node = current_node.prev
 
@@ -201,17 +203,15 @@ class LinkedList:
         Transforms node list to dictionary with nodes for save in some file.
         :return: dict
         """
-        # if self.sd is None:
-
         linked_list = {}
         for node in self._node_iter():
-            linked_list[id(node)] = {
+            linked_list[str(id(node))] = {
                 "value": node.value,
-                "next_node": id(node.next) if node.next else None,
-                "prev_node": id(node.prev) if node.prev else None   # для того чтобы можно было реализовать проход
+                "next_node": str(id(node.next)) if node.next else None,
+                "prev_node": str(id(node.prev)) if node.prev else None   # для того чтобы можно было реализовать проход
                                                                 # с конца. Сейчас это не нужно, это памятка для меня.
             }
-        self.sd.write({"head": id(self.__head), "nodes": linked_list, "tail": id(self.__tail)})
+        self.sd.write({"head": str(id(self.__head)), "nodes": linked_list, "tail": str(id(self.__tail))})
 
     def load(self):     # , new_nodes: dict):
         """
@@ -225,7 +225,10 @@ class LinkedList:
 
         for _ in range(len(new_nodes["nodes"])):
             node = new_nodes["nodes"].pop(str(id_head))
-            self.append(Node(node["value"]))
+            # title = node["value"]["title"]
+            # author = node["value"]["author"]
+            # genre = node["value"]["genre"]
+            self.append(node["value"])
             id_head = node["next_node"] if node["next_node"] else None
 
     def set_structure_driver(self, structure_driver):
@@ -234,18 +237,18 @@ class LinkedList:
 
 if __name__ == '__main__':
     l1 = LinkedList()
-    l1.append(1)
-    l1.append(2)
+    l1.append({1: 1})
+    l1.append({2: 2})
     l1.insert(12, 3)
-    l1.append(4)
-    l1.insert(9, 5)
-    l1.insert(0, 0)
-    l1.insert(1, 99)
+    # l1.append(4)
+    # l1.insert(9, 5)
+    # l1.insert(0, 0)
+    # l1.insert(1, 99)
     # print(dir(l1))
     # # print(l1)
     # a = iter(l1)
 
-    # print(l1)
+    print(l1)
 
     # l1.save()
     # print(d1)
@@ -254,14 +257,17 @@ if __name__ == '__main__':
     # l1.load(d1)
     # print(l1)
 
-    driver_name = input("Please enter driver name > ")
-    builder = Drivers.SDFabric().get_sd_driver(driver_name)
+    # driver_name = input("Please enter driver name > ")
+    builder = Drivers.SDFabric().get_sd_driver("JSONFileDriver")
     sd = builder.build()
-
+    #
     l1.set_structure_driver(sd)
-    # l1.save()
-    l1.load()
+    l1.save()
+    # l1.load()
     print(l1)
+    # print(next(l1.__iter__()))
+    # print(next(l1.__iter__()))
+
     # obj = {
     #     "a": [
     #         {
