@@ -1,3 +1,7 @@
+"""
+Переделка old_Library.py под ООП
+"""
+
 import tkinter as tk
 import linkedlist
 

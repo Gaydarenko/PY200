@@ -1,3 +1,7 @@
+"""
+Для компиляции программы
+"""
+
 from cx_Freeze import setup, Executable
 
 
@@ -10,4 +14,4 @@ options = {'build_exe': {'include_msvcr': True, 'includes': includes, 'zip_inclu
 setup(name='old_Library', version='0.0.22', description='My app', executables=executables, options=options)
 
 # setup(name='old_Library', version='0.22', description='My_app', executables=[Executable('old_Library.py')])
-
+ё
